@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="Django default">
+  <database-model serializer="dbm" rdbms="MSSQL" format-version="4.11">
+    <root id="1">
+      <ServerVersion>3.25</ServerVersion>
+    </root>
+    <database id="2" parent="1">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </database>
+    <schema id="3" parent="2">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+  </database-model>
+</dataSource>
