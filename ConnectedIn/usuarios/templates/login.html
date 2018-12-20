@@ -6,7 +6,7 @@
 		{% csrf_token %}
 		<h2 class="form-signin-heading">Login</h2>
 
-		<input type="text" class="form-control" id="id_username" name="username" placeholder="Nome" required autofocus>
+		<input type="text" class="form-control" id="id_username" name="username" placeholder="Nome de Usuário" required autofocus>
 
 		<input type="password" class="form-control" id="id_password" name="password" placeholder="Senha" required>
 
@@ -21,7 +21,7 @@
 			</div>
 		{% endif %}
 
-		<a href="{% url 'registrar' %}">Registre-se</a>
+		<a href="{% url 'registrar' %}">Cadastrar</a>
 	</form>
 
 {% endblock %}
