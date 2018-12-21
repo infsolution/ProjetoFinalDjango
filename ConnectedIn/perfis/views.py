@@ -95,3 +95,13 @@ def change_password(request):
     return render(request, 'perfis/change_password.html', {
         'form': form
     })
+
+def feed(request):
+    userids = []
+    for id in request.user.perfil.all():
+        userids.append(id)
+
+    userids.append(request.user.id)
+    posts = Post.objects.filter(user_id_in=userids)[0:25]
+
+    return render(request, 'feed.html', {'posts': posts})
