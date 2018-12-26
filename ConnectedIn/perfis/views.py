@@ -5,7 +5,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import redirect
 from django.shortcuts import render
 
-from perfis.models import Perfil, Convite
+from perfis.models import *
 
 
 # Create your views here.
@@ -18,7 +18,7 @@ def index(request):
     return render(request, 'index.html', {'nome':'ely', 'n' : n})
     '''
 
-    return render(request, 'index.html', {'perfis': Perfil.objects.all(),
+    return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(),
                                           'perfil_logado': get_perfil_logado(request)})
 
 
@@ -27,7 +27,7 @@ def exibir_perfil(request, perfil_id):
     # perfil = get(perfil_id)
     perfil = Perfil.objects.get(id=perfil_id)
 
-    return render(request, 'perfil.html',
+    return render(request, 'perfis/perfil.html',
                   {'perfil': perfil,
                    'perfil_logado': get_perfil_logado(request)})
 
@@ -98,7 +98,7 @@ def change_password(request):
 
 def feed(request):
     userids = []
-    for id in request.user.perfil.all():
+    for id in request.user.perfil.contatos.all():
         userids.append(id)
 
     userids.append(request.user.id)

@@ -15,31 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as v
-from django.urls import path
+from django.urls import path, include
 
-from perfis import views
+
 from usuarios.views import RegistrarUsuarioView
-
 from django.conf.urls import url
 
 urlpatterns = [
+    path('', include('perfis.urls')),
+    path('usuarios/',include('usuarios.urls')),
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('perfil/<int:perfil_id>', views.exibir_perfil, name='exibir'),
-    path('perfil/<int:perfil_id>/convidar', views.convidar, name='convidar'),
-    path('perfil/<int:perfil_id>/desfazer', views.desfazer, name='desfazer'),
-
-    path('convite/<int:convite_id>/aceitar', views.aceitar, name='aceitar'),
-    path('convite/<int:convite_id>/recusar', views.recusar, name='recusar'),
-
-    path('registrar/', RegistrarUsuarioView.as_view(), name='registrar'),
-
-    path('login/', v.LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', v.LogoutView.as_view(template_name='login.html'), name="logout"),
-
-    path('feed/', feed, name='feed'),
-
-    url(r'^password/$', views.change_password, name='change_password'),
-
 
 ]
+

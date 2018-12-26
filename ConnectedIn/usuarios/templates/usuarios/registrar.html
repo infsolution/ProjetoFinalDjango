@@ -1,4 +1,4 @@
-{% extends "base_usuario.html" %}
+{% extends "usuarios/base_usuario.html" %}
 
 {% block body %}
     <form class="form-signin" method="post"
@@ -37,7 +37,7 @@
             </div>
         {% endif %}
 
-        <a href="{% url 'login' %}">Logar</a>
+        <a href="{% url 'login' %}">Login</a>
     </form>
 
 

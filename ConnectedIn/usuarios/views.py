@@ -18,7 +18,7 @@ from django.shortcuts import redirect
 class RegistrarUsuarioView(View):
 
 	def get(self, request):
-		return render(request, 'registrar.html')
+		return render(request, 'usuarios/registrar.html')
 
 	def post(self, request):
 		form = RegistrarUsuarioForm(request.POST)
@@ -37,4 +37,4 @@ class RegistrarUsuarioView(View):
 			perfil.save()
 			return redirect('index')
 		
-		return render(request, 'registrar.html', {'form': form})
+		return render(request, 'usuarios/registrar.html', {'form': form})
