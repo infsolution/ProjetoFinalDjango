@@ -15,4 +15,5 @@ urlpatterns = [
 	path('registrar/', RegistrarUsuarioView.as_view(), name='registrar'),
 	path('password/', views.change_password, name='change_password'),
 	path('feed/', views.feed, name='feed'),
+	path('promover/<int:perfil_id>', views.promover, name='promover'),
 ]

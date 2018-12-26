@@ -4,51 +4,22 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import redirect
 from django.shortcuts import render
-
 from perfis.models import *
-
-
-# Create your views here.
 
 @login_required
 def index(request):
-    '''
-    import random
-    n = random.randint(0,100)
-    return render(request, 'index.html', {'nome':'ely', 'n' : n})
-    '''
-
-    return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(),
-                                          'perfil_logado': get_perfil_logado(request)})
+    return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(), 'perfil_logado': get_perfil_logado(request)})
 
 
 @login_required
 def exibir_perfil(request, perfil_id):
-    # perfil = get(perfil_id)
     perfil = Perfil.objects.get(id=perfil_id)
-
-    return render(request, 'perfis/perfil.html',
-                  {'perfil': perfil,
-                   'perfil_logado': get_perfil_logado(request)})
-
-
-def get(perfil_id):
-    if (perfil_id == 1):
-        return Perfil('Firmo', 'azurefirmo@live.com',
-                      'XXXXX-XXXX', 'AzureDOT')
-    if (perfil_id == 2):
-        return Perfil('Jamarola', 'jamarola@outlook.com',
-                      'YYYYY-YYYY', 'Google')
-    if (perfil_id == 3):
-        return Perfil('Azure', 'azurefirmo@gmail.com',
-                      'ZZZZZ-ZZZZ', 'Microsoft')
-
+    return render(request, 'perfis/perfil.html',{'perfil': perfil,'perfil_logado': get_perfil_logado(request)})
 
 @login_required
 def convidar(request, perfil_id):
     perfil_a_convidar = Perfil.objects.get(id=perfil_id)
     perfil_logado = get_perfil_logado(request)
-
     if (perfil_logado.pode_convidar(perfil_a_convidar)):
         perfil_logado.convidar(perfil_a_convidar)
 
@@ -100,8 +71,14 @@ def feed(request):
     userids = []
     for id in request.user.perfil.contatos.all():
         userids.append(id)
-
     userids.append(request.user.id)
     posts = Post.objects.filter(user_id_in=userids)[0:25]
-
     return render(request, 'feed.html', {'posts': posts})
+
+def promover(request, perfil_id):
+    perfil = Perfil.objects.get(id=perfil_id)
+    usuario = perfil.usuario
+    usuario.is_superuser = 1
+    usuario.save()
+    return render(request, 'perfis/perfil.html',{'perfil': perfil,'perfil_logado': get_perfil_logado(request)})
+

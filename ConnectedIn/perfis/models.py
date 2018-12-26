@@ -1,33 +1,14 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-
-# Create your models here.
-
 class Perfil(models.Model):
-    '''
-	def __init__(self, nome = '', email = '',
-		telefone = '', nome_empresa = ''):
-		self.nome = nome
-		self.email = email
-		self.telefone = telefone
-		self.nomelse_empresa = nome_empresa
-    '''
-
     nome = models.CharField(max_length=255, null=False)
-
     telefone = models.CharField(max_length=15, null=False)
-
     nome_empresa = models.CharField(max_length=255, null=False)
-
     contatos = models.ManyToManyField('Perfil')
-
     usuario = models.OneToOneField(User, related_name='perfil', on_delete=models.CASCADE)
-
     criado_em = models.DateTimeField(auto_now_add=True)
-
     atualizado_em = models.DateTimeField(auto_now=True)
-
     @property
     def email(self):
         return self.usuario.email
@@ -38,7 +19,6 @@ class Perfil(models.Model):
 
     def pode_convidar(self, perfil):
         nao_pode = self.convite_a_si_mesmo(perfil) or self.ja_eh_contato(perfil) or self.ja_possui_convite(perfil)
-
         return not nao_pode
 
     def convite_a_si_mesmo(self, perfil):
@@ -59,7 +39,6 @@ class Perfil(models.Model):
     def __str__(self):
         return self.nome
 
-
 class Convite(models.Model):
     solicitante = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='convites_feitos')
     convidado = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='convites_recebidos')
@@ -72,7 +51,6 @@ class Convite(models.Model):
     def recusar(self):
         self.delete()
 
-
 class Post(models.Model):
     user = models.ForeignKey(Perfil, related_name='postagens', on_delete=models.DO_NOTHING)
     body = models.CharField(max_length=255)
@@ -80,4 +58,3 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
-

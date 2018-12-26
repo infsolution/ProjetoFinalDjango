@@ -12,9 +12,10 @@
         {% if perfil_logado.pode_convidar %}
             <div class="well well-sm">Vocês já estão Conectados</div>
         {% elif perfil != perfil_logado %}
-            <a href="{% url 'convidar' perfil.id %}">
-                Convidar
-            </a>
+            <a href="{% url 'convidar' perfil.id %}">Convidar</a>
+            {% if perfil.usuario.is_superuser == False %}
+            <a href="{% url 'promover' perfil.id %}">Promover a adm</a>
+            {% endif %}
         {% endif %}
     </div>
 {% endblock %}
