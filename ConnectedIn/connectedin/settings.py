@@ -35,8 +35,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'perfis',
-    'usuarios',
+    'perfis.apps.PerfisConfig',
+    'usuarios.apps.UsuariosConfig',
+    'posts.apps.PostsConfig',
+    'bootstrap',
+    'fontawesome',
 ]
 
 MIDDLEWARE = [
@@ -121,8 +124,8 @@ LOGIN_REDIRECT_URL = '/'
 # Setup das Variáveis para Envio de Emails
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = '' # mail service smtp
-EMAIL_HOST_USER = '' # email id
-EMAIL_HOST_PASSWORD = '' #password
+EMAIL_HOST = 'smtp.gmail.com' # mail service smtp
+EMAIL_HOST_USER = 'ciceroleonardodasilva@gmail.com' # email id
+EMAIL_HOST_PASSWORD = 'cicero@marcelia' #password
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

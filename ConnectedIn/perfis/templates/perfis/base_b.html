@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	 <meta charset="utf-8">
+	<title></title>
+	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
+</head>
+<body>
+	<div class="container">
+		<div class="header">
+        <ul class="nav nav-pills pull-right">
+            <li><a href="{% url 'exibir' perfil_logado.id %}">{{ perfil_logado.nome }}</a></li>
+            <li><a href="/logout/">Logout</a></li>
+            <li><a href="{% url 'change_password' %}">Mudar Senha</a></li>
+        </ul>
+        <h3 class="text-muted"> <a href="{% url 'index' %}"> ConnectedIn</a></h3>
+    	</div>
+    	<div class="container">
+    		<div class="row">
+    			<div class="col-md-3">
+    				<div class="panel panel-default">
+			            {% with total=perfil_logado.contatos.count %}
+			                {% if total %}
+			                    <div class="panel-heading">
+			                        <strong> {{ total }}
+			                            Contato{{ total|pluralize }}
+			                        </strong>
+			                    </div>
+			                    <ul class="list-group">
+			                        {% for perfil in perfil_logado.contatos.all %}
+			                            <li class="list-group-item">
+			                                <a href="{% url 'exibir' perfil.id %}">
+			                                    {{ perfil }}
+			                                </a>
+			                                <a class="pull-right" href="{% url 'desfazer' perfil.id %}">
+			                                    Desfazer Amizade
+			                                </a>
+			                            </li>
+			                        {% endfor %}
+			                    </ul>
+			                {% else %}
+			                    <div class="panel-body">
+			                        Não há Contatos! :(
+			                    </div>
+			                {% endif %}
+			            {% endwith %}
+			        </div>
+    				
+    			</div>
+    			<div class="col-md-6">
+    				{% block body %}
+        			{% endblock %}
+    			</div>
+    			<div class="col-md-3">
+    				<div class="panel panel-default">
+			            {% with total=perfil_logado.convites_recebidos.count %}
+			                {% if total %}
+			                    <div class="panel-heading">
+			                        <strong> {{ total }}
+			                            Convite{{ total|pluralize }} aguardando Aprovação</strong>
+			                    </div>
+			                    <ul class="list-group">
+			                        {% for convite in perfil_logado.convites_recebidos.all %}
+			                            <li class="list-group-item">
+			                                <ul class="list-inline">
+			                                    <li class="list-inline-item">
+			                                        <a href="{% url 'exibir' convite.solicitante.id %}">
+			                                            {{ convite.solicitante.nome }}
+			                                        </a>
+			                                    </li>
+			                                    <li class="list-inline-item pull-right">
+			                                        <a href="{% url 'recusar' convite.id %}">Recusar</a>
+			                                    </li>
+			                                    <li class="list-inline-item pull-right">
+			                                        <a href="{% url 'aceitar' convite.id %}">Aceitar</a>
+			                                    </li>
+			                                </ul>
+			                            </li>
+			                        {% endfor %}
+			                    </ul>
+			                {% else %}
+			                    <div class="panel-body">
+			                        Não há Convites
+			                    </div>
+			                {% endif %}
+			            {% endwith %}
+			        </div>
+    				
+    			</div>
+    		</div>
+    	</div>
+    	<div class="footer">
+    		<div class="col-xs-12 text-center">
+		      <p>&copy; ConnectedIn.</p>
+		    </div>
+    	</div>
+
+		
+	</div>
+	<script defer src="{% static 'fontawesome/js/fontawesome-all.min.js' %}"></script>
+	<script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
+	<script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

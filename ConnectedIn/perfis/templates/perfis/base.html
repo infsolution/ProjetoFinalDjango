@@ -1,30 +1,45 @@
-{% load staticfiles %}
+{% load static %}
 <!doctype html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8">
     <title>ConnectedIn</title>
-    <link rel="stylesheet"
-          href="{% static 'styles/bootstrap.css' %}">
-    <link rel="stylesheet"
-          href="{% static 'styles/main.css' %}">
+    <!--link rel="stylesheet" href="{% static 'styles/bootstrap.css' %}"-->
+    <!--link rel="stylesheet" href="{% static 'styles/main.css' %}"-->
+          <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+          <link rel="stylesheet" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
+
 
 </head>
 <body>
 <div class="container">
     <div class="header">
         <ul class="nav nav-pills pull-right">
-            <li><a href="{% url 'index' %}">{{ perfil_logado.nome }}</a></li>
+            <li><a href="{% url 'exibir' perfil_logado.id %}">{{ perfil_logado.nome }}</a></li>
             <li><a href="/logout/">Logout</a></li>
             <li><a href="{% url 'change_password' %}">Mudar Senha</a></li>
         </ul>
-        <h3 class="text-muted">ConnectedIn</h3>
+        <h3 class="text-muted"> <a href="{% url 'index' %}"> ConnectedIn</a></h3>
     </div>
 
     <div class="row content">
+        <div class="col-md-4 col-sm-6">
+            
+        </div>
+        <div class="col-md-4 col-sm-6">
         {% block body %}
         {% endblock %}
+        </div>
+        <div class="col-md-4 col-sm-6">
+        </div>
+    </div>
+    <div class="col-xs-12 text-center">
+      <p>&copy; ConnectedIn.</p>
     </div>
 </div>
+
+<script defer src="{% static 'fontawesome/js/fontawesome-all.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 </body>
 </html>

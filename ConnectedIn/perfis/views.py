@@ -5,16 +5,22 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import redirect
 from django.shortcuts import render
 from perfis.models import *
+from posts.forms import PostModelForm
 
 @login_required
 def index(request):
     perfil_logado = get_perfil_logado(request)
     if perfil_logado.ativa == False or perfil_logado.bloqueado == True:
         return render(request,'perfis/transicao.html', {'perfil_logado': perfil_logado})
+    form = PostModelForm()
     if perfil_logado.usuario.is_superuser:
-        return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(), 'perfil_logado': perfil_logado})
-    return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True, bloqueado=False), 'perfil_logado': perfil_logado})
-# 
+        return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(),
+         'perfil_logado': perfil_logado, 'form':form})
+    return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True, bloqueado=False), 
+        'perfil_logado': perfil_logado, 'form':form})
+
+
+
 
 @login_required
 def exibir_perfil(request, perfil_id):
@@ -110,7 +116,7 @@ def desativar(request):
         return redirect('login')
 
     else:
-        return render(request, 'perfis/desativar.html')
+        return render(request, 'perfis/desativar.html',{'perfil_logado':get_perfil_logado(request)})
 
 def reativar(request):
     if request.method == 'POST':
