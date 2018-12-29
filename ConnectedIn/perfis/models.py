@@ -13,6 +13,7 @@ class Perfil(models.Model):
     ativa = models.BooleanField(default=True)
     justificativa = models.TextField(null=True)
     bloqueado = models.BooleanField(default=False)
+    error_mensage = models.CharField(max_length=512, null=True)
     @property
     def email(self):
         return self.usuario.email

@@ -1,15 +1,15 @@
 {% extends 'perfis/base.html' %}
 {% block body %}
 
-{% if perfil.ativa == False %}
-<h1>conta inativa</h1>
-<form action="{% url 'reativar' %}" method="POST" accept-charset="utf-8">
-	{% csrf_token %}
-	<button type="submit">REATIVAR CONTA</button>
-</form>
+{% if perfil_logado.ativa == False %}
+	<h1>conta inativa</h1>
+	<form action="{% url 'reativar' %}" method="POST" accept-charset="utf-8">
+		{% csrf_token %}
+		<button type="submit">REATIVAR CONTA</button>
+	</form>
 {% endif %}
 
-{% if perfil.bloqueado == True %}
+{% if perfil_logado.bloqueado == True %}
 	<h1>Perfil bloquado contate um administrador.</h1>
 {% endif %}
 {% endblock %}

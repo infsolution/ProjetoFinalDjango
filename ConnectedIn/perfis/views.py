@@ -11,19 +11,23 @@ def index(request):
     perfil_logado = get_perfil_logado(request)
     if perfil_logado.ativa == False or perfil_logado.bloqueado == True:
         return render(request,'perfis/transicao.html', {'perfil_logado': perfil_logado})
-    return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True), 'perfil_logado': perfil_logado})
-
+    return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True, bloqueado=False), 'perfil_logado': perfil_logado})
+# 
 
 @login_required
 def exibir_perfil(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
+    if perfil.bloqueado:
+        perfil.error_mensage = 'Conta bloqueada pelos administradores!'
+        return render(request, 'perfis/perfil.html',{'perfil_logado': get_perfil_logado(request), 'perfil':perfil})
     if perfil.ativa:
         perfil_logado = get_perfil_logado(request)
         perfil_logado.convidavel = perfil_logado.pode_convidar(perfil)
         return render(request, 'perfis/perfil.html',{'perfil': perfil,'perfil_logado': perfil_logado})
     else:
-        return render(request, 'perfis/perfil.html',{'deactivated':'Conta temporariamente desativada!',
-            'perfil_logado': get_perfil_logado(request)})
+        perfil.error_mensage = 'Conta temporariamente desativada!'
+        return render(request, 'perfis/perfil.html',{'perfil_logado': get_perfil_logado(request),'perfil':perfil})
+
 @login_required
 def convidar(request, perfil_id):
     perfil_a_convidar = Perfil.objects.get(id=perfil_id)
@@ -119,3 +123,9 @@ def bloquear(request, perfil_id):
         perfil.bloqueado = True
         perfil.save()
         return redirect('index')
+
+def desbloquear(request, perfil_id):
+    perfil = Perfil.objects.get(id=perfil_id)
+    perfil.bloqueado = False
+    perfil.save()
+    return redirect('index')

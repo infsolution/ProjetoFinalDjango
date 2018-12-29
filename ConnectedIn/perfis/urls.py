@@ -19,4 +19,5 @@ urlpatterns = [
 	path('desativar/',views.desativar, name='desativar'),
 	path('reativar/',views.reativar, name='reativar'),
 	path('bloquear/<int:perfil_id>',views.bloquear,name='bloquear'),
+	path('desbloquear/<int:perfil_id>',views.desbloquear, name='desbloquear'),
 ]
