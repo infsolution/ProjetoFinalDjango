@@ -14,9 +14,9 @@
         <a href="{% url 'desbloquear' perfil.id %}">desbloquear</a>
         {% endif %}
     {% elif perfil.ativa %}
-    {% if perfil_logado == perfil %}
-        <a href="{% url 'desativar' %}"> Desativar conta</a>
-    {% endif %}
+        {% if perfil_logado == perfil %}
+            <a href="{% url 'desativar' %}"> Desativar conta</a>
+        {% endif %}
 
     <div class="col-lg-12">
         <h2 style="margin-top: 0px">{{ perfil.nome }}</h2>
@@ -26,20 +26,37 @@
             <strong>{{ perfil.nome_empresa }}</strong>
         </address>
 
+        {% if perfil in perfil_logado.contatos.all %}
+                <strong>São Amigos</strong>
+        {% endif %}
         {% if perfil_logado.convidavel %}
             <a href="{% url 'convidar' perfil.id %}">Convidar</a>
         {% elif perfil_logado != perfil %}
-        <strong>Amigos</strong>
+            {% if perfil_logado.convites_recebidos.count >= 1 or perfil_logado.convites_feitos.count >= 1 %}
+                {% for convite in perfil_logado.convites_recebidos.all %}
+                    {% if perfil == convite.solicitante %}
+                        <strong><p>Convite de pendende</p></strong>
+                        <a href="{% url 'aceitar' convite.id %}">Aceitar</a>
+                         <a href="{% url 'recusar' convite.id %}">Recusar</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% for convite in perfil_logado.convites_feitos.all %}
+                 {% if perfil == convite.convidado %}
+                    <strong>Convite enviado.</strong>    
+                {% endif %}
+                {% endfor %}
+            {% endif %}    
         {% endif %}
         {% if perfil.usuario.is_superuser == False and perfil_logado.usuario.is_superuser == True %}
             <a href="{% url 'promover' perfil.id %}">Promover a adm</a>
-            <a href="{% url 'bloquear' perfil.id %}">Bloquear perfil</a>
-            {% endif %}
-    </div>
+            <a href="{% url 'bloquear' perfil.id %}" onclick="return confirm('Deseja mesmo bloquear o usuario {{perfil.nome}}?')">Bloquear perfil</a>
+        {% endif %}
     {% else %}
-     <div class="alert alert-danger" role="alert">
-            <h3>Atenção!</h3>
-            <p>{{perfil.error_mensage}}</p>
-    </div>
-    {% endif %}
+         <div class="alert alert-danger" role="alert">
+                <h3>Atenção!----</h3>
+                <p>{{perfil.error_mensage}}</p>
+        </div>
+    {% endif %}  
+    </div>    
 {% endblock %}

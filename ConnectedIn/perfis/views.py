@@ -11,6 +11,8 @@ def index(request):
     perfil_logado = get_perfil_logado(request)
     if perfil_logado.ativa == False or perfil_logado.bloqueado == True:
         return render(request,'perfis/transicao.html', {'perfil_logado': perfil_logado})
+    if perfil_logado.usuario.is_superuser:
+        return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(), 'perfil_logado': perfil_logado})
     return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True, bloqueado=False), 'perfil_logado': perfil_logado})
 # 
 

@@ -11,6 +11,9 @@
                     <li class="list-group-item">
                         <a href="{% url 'exibir' perfil.id %}">    {{ perfil.nome }} / {{ perfil.email }}
                         </a>
+                        {% if perfil.bloqueado%}
+                            <p>bloqueado.</p>
+                        {% endif %}
                     </li>
                 {% endfor %}
             {% else %}
