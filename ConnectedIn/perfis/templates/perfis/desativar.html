@@ -1,0 +1,14 @@
+{% extends 'perfis/base.html' %}
+{% block body %}
+
+<div class="col-lg-12">
+	<form action="{% url 'desativar' %}" method="post" accept-charset="utf-8">
+		{% csrf_token %}
+		<label>Por que você que desativar sua conta?</label>
+		<textarea name="justificativa" rows="5" cols="70" placeholder="Responda aqui."></textarea>
+		<button type="submit">DESATIVAR</button>
+	</form>
+	
+</div>
+
+{% endblock %}

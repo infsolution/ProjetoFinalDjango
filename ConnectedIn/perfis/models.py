@@ -9,6 +9,10 @@ class Perfil(models.Model):
     usuario = models.OneToOneField(User, related_name='perfil', on_delete=models.CASCADE)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
+    convidavel = models.BooleanField(blank=True, null=True)
+    ativa = models.BooleanField(default=True)
+    justificativa = models.TextField(null=True)
+    bloqueado = models.BooleanField(default=False)
     @property
     def email(self):
         return self.usuario.email

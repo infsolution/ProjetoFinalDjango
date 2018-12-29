@@ -1,21 +1,37 @@
 {% extends 'perfis/base.html' %}
 {% block body %}
+
+    {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
+    {% if perfil.ativa %}
+    {% if perfil_logado == perfil %}
+        <a href="{% url 'desativar' %}"> Desativar conta</a>
+    {% endif %}
+
     <div class="col-lg-12">
         <h2 style="margin-top: 0px">{{ perfil.nome }}</h2>
         <address>
             <a href="mailto:{{ perfil.email }}">{{ perfil.email }}</a>
             <br>
             <strong>{{ perfil.nome_empresa }}</strong>
-
         </address>
 
-        {% if perfil_logado.pode_convidar %}
-            <div class="well well-sm">Vocês já estão Conectados</div>
-        {% elif perfil != perfil_logado %}
+        {% if perfil_logado.convidavel %}
             <a href="{% url 'convidar' perfil.id %}">Convidar</a>
-            {% if perfil.usuario.is_superuser == False %}
-            <a href="{% url 'promover' perfil.id %}">Promover a adm</a>
-            {% endif %}
+        {% elif perfil_logado != perfil %}
+        <strong>Amigos</strong>
         {% endif %}
+        {% if perfil.usuario.is_superuser == False and perfil_logado.usuario.is_superuser == True %}
+            <a href="{% url 'promover' perfil.id %}">Promover a adm</a>
+            <a href="{% url 'bloquear' perfil.id %}">Bloquear perfil</a>
+            {% endif %}
     </div>
+    {% else %}
+     <div class="alert alert-danger" role="alert">
+            <h3>{{deactivated}}</h3>
+    </div>
+    {% endif %}
 {% endblock %}

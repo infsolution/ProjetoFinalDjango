@@ -8,14 +8,22 @@ from perfis.models import *
 
 @login_required
 def index(request):
-    return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(), 'perfil_logado': get_perfil_logado(request)})
+    perfil_logado = get_perfil_logado(request)
+    if perfil_logado.ativa == False or perfil_logado.bloqueado == True:
+        return render(request,'perfis/transicao.html', {'perfil_logado': perfil_logado})
+    return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True), 'perfil_logado': perfil_logado})
 
 
 @login_required
 def exibir_perfil(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
-    return render(request, 'perfis/perfil.html',{'perfil': perfil,'perfil_logado': get_perfil_logado(request)})
-
+    if perfil.ativa:
+        perfil_logado = get_perfil_logado(request)
+        perfil_logado.convidavel = perfil_logado.pode_convidar(perfil)
+        return render(request, 'perfis/perfil.html',{'perfil': perfil,'perfil_logado': perfil_logado})
+    else:
+        return render(request, 'perfis/perfil.html',{'deactivated':'Conta temporariamente desativada!',
+            'perfil_logado': get_perfil_logado(request)})
 @login_required
 def convidar(request, perfil_id):
     perfil_a_convidar = Perfil.objects.get(id=perfil_id)
@@ -77,8 +85,37 @@ def feed(request):
 
 def promover(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
-    usuario = perfil.usuario
-    usuario.is_superuser = 1
-    usuario.save()
-    return render(request, 'perfis/perfil.html',{'perfil': perfil,'perfil_logado': get_perfil_logado(request)})
+    if request.user.is_superuser == True:
+        usuario = perfil.usuario
+        usuario.is_superuser = 1
+        usuario.save()
+    else:
+        return render(request, 'perfis/perfil.html',{'perfil': perfil,
+            'perfil_logado': get_perfil_logado(request), 'error':'Você não é admin'}) 
+    return render(request, 'perfis/perfil.html',{'perfil': perfil,
+        'perfil_logado': get_perfil_logado(request)})
 
+def desativar(request):
+    if request.method == 'POST':
+        perfil = Perfil.objects.get(usuario=request.user)
+        perfil.ativa = False
+        perfil.justificativa = request.POST['justificativa']
+        perfil.save()
+        return redirect('login')
+
+    else:
+        return render(request, 'perfis/desativar.html')
+
+def reativar(request):
+    if request.method == 'POST':
+        perfil = Perfil.objects.get(usuario=request.user)
+        perfil.ativa = True
+        perfil.save()
+    return redirect('index')
+
+def bloquear(request, perfil_id):
+    if request.user.is_superuser:
+        perfil = Perfil.objects.get(id=perfil_id)
+        perfil.bloqueado = True
+        perfil.save()
+        return redirect('index')
