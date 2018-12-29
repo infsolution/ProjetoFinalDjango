@@ -1,0 +1,17 @@
+{% extends "usuarios/base_usuario.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recuperar Senha</title>
+</head>
+<body>
+    <form method="post">{% csrf_token %}
+        <div>
+            {{ form.email.errors }}
+            <label for="id_email">{% trans 'Endereço de Email:' %}</label>
+            {{ form.email }}
+        </div>
+        <input type="submit" value="{% trans 'Resetar minha Senha' %}" />
+    </form>
+</body>
+</html>
