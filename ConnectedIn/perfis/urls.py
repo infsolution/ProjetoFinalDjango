@@ -20,4 +20,5 @@ urlpatterns = [
 	path('reativar/',views.reativar, name='reativar'),
 	path('bloquear/<int:perfil_id>',views.bloquear,name='bloquear'),
 	path('desbloquear/<int:perfil_id>',views.desbloquear, name='desbloquear'),
+	path('search', views.search, name='search'),
 ]

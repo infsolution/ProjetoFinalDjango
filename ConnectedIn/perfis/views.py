@@ -15,12 +15,26 @@ def index(request):
     form = PostModelForm()
     if perfil_logado.usuario.is_superuser:
         return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(),
-         'perfil_logado': perfil_logado, 'form':form})
+         'perfil_logado': perfil_logado, 'form':form, 'posts':getPosts(perfil_logado)})
     return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True, bloqueado=False), 
-        'perfil_logado': perfil_logado, 'form':form})
+        'perfil_logado': perfil_logado, 'form':form, 'posts':getPosts(perfil_logado)})
 
-
-
+def getPosts(perfil_logado):
+    perfilPosts=[]
+    for post in perfil_logado.postagens.all():
+        perfilPosts.append(post)
+    for perfil in perfil_logado.contatos.all():
+        for post in perfil.postagens.all():
+            if len(perfilPosts) == 0:
+                perfilPosts.append(post)
+            for ind in range(len(perfilPosts)):
+                if post.created_at > perfilPosts[ind].created_at:
+                    perfilPosts.insert(ind,post)
+                    break
+                else:
+                    perfilPosts.append(post)
+                    break
+    return perfilPosts
 
 @login_required
 def exibir_perfil(request, perfil_id):
@@ -137,3 +151,9 @@ def desbloquear(request, perfil_id):
     perfil.bloqueado = False
     perfil.save()
     return redirect('index')
+
+def search(request):
+    search = request.GET['word']
+    perfis = Perfil.objects.filter(nome__contains=search,bloqueado=False, ativa=True)
+    perfil_logado = get_perfil_logado(request)
+    return render(request, 'perfis/result_search.html', {'perfis':perfis, 'perfil_logado':perfil_logado})

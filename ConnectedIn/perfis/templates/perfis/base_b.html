@@ -7,16 +7,50 @@
 	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
 </head>
-<body>
+<body style="margin-top: 5em">
+	<nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #e3f2fd;">
+		<div class="container-fluid">
+		 	<a class="navbar-brand" href="{% url 'index' %}">
+		    	<img src="{% static 'img/photo.jpg' %}" width="30" height="30" alt="">
+		    	SosiAll
+		 	</a>
+		 	
+
+		 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+		    	<span class="navbar-toggler-icon"></span>
+		 	</button>
+		 	<div class="collapse navbar-collapse" id="navbarNavDropdown">
+			    <ul class="navbar-nav ml-auto">
+			     	<li class="nav-item active">
+				      	<form class="form-inline" action="{% url 'search' %}" method="GET">
+						    <div class="input-group mb-6">
+							  <input type="text" class="form-control" name="word" placeholder="Procure pessoas ou coisas"  aria-describedby="basic-addon2" required="">
+							  <div class="input-group-append">
+							    <button class="btn btn-outline-secondary" type="submit">Prourar</button>
+							  </div>
+							</div>
+					 	</form>
+			     	</li>
+			     	<li class="nav-item">
+			        	<a class="nav-link" href="#"><img src="{% static 'img/photo.jpg' %}" width="30" height="30" alt=""></a>
+			     	</li>
+			     	<li class="nav-item">
+			        	<a class="nav-link" href="{% url 'exibir' perfil_logado.id %}">{{perfil_logado.nome}}</a>
+			     	</li>
+			     	<li class="nav-item">
+			        	<a class="nav-link" href="/logout/">Sair</a>
+			     	</li>
+			     	<li class="nav-item">
+			        	<a class="nav-link" href="{% url 'change_password' %}">Mudar Senha</a>
+			     	</li>
+			    </ul>
+		  	</div>
+		</div>  
+	</nav>
 	<div class="container">
-		<div class="header">
-        <ul class="nav nav-pills pull-right">
-            <li><a href="{% url 'exibir' perfil_logado.id %}">{{ perfil_logado.nome }}</a></li>
-            <li><a href="/logout/">Logout</a></li>
-            <li><a href="{% url 'change_password' %}">Mudar Senha</a></li>
-        </ul>
-        <h3 class="text-muted"> <a href="{% url 'index' %}"> ConnectedIn</a></h3>
-    	</div>
+		<!--div class="header">
+
+    	</div-->
     	<div class="container">
     		<div class="row">
     			<div class="col-md-3">
@@ -34,7 +68,7 @@
 			                                <a href="{% url 'exibir' perfil.id %}">
 			                                    {{ perfil }}
 			                                </a>
-			                                <a class="pull-right" href="{% url 'desfazer' perfil.id %}">
+			                                <a class="pull-right" href="{% url 'desfazer' perfil.id %}" onclick="return confirm('Deseja mesmo  desfazer amizade com {{perfil.nome}}?')">
 			                                    Desfazer Amizade
 			                                </a>
 			                            </li>
@@ -87,7 +121,27 @@
 			                {% endif %}
 			            {% endwith %}
 			        </div>
-    				
+			        {% if perfil_logado.usuario.is_superuser %}
+			        <div class="panel panel-default">
+			            <div class="panel-heading">
+			                <strong>Todos os Perfis</strong>
+			            </div>
+			            {% if perfis %}
+			                <ul class="list-group">
+			                {% for perfil in perfis %}
+			                    <li class="list-group-item">
+			                        <a href="{% url 'exibir' perfil.id %}">{{ perfil.nome }}</a>
+			                        {% if perfil.bloqueado%}
+			                            <p>bloqueado.</p>
+			                        {% endif %}
+			                    </li>
+			                {% endfor %}
+			            {% else %}
+			                <p>Não há Perfis Cadastrados!</p>
+			            {% endif %}
+			            </ul>
+			        </div>
+    				{% endif %}
     			</div>
     		</div>
     	</div>

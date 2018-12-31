@@ -4,6 +4,7 @@ class Post(models.Model):
     user = models.ForeignKey(Perfil, related_name='postagens', on_delete=models.DO_NOTHING)
     postagem = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    init = models.BooleanField(default=False)
     def __str__(self):
     	return self.postagem
 

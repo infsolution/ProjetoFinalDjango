@@ -1,0 +1,6 @@
+{% extends 'perfis/base_b.html' %}
+{% block body %}
+{% for perfil in perfis %}
+<a href="{% url 'exibir' perfil.id %}"><strong>{{ perfil.nome }}</strong></a>
+{% endfor %}
+{% endblock %}

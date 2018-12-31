@@ -11,6 +11,7 @@ from django.views.generic.base import View
 from usuarios.forms import RegistrarUsuarioForm
 from django.contrib.auth.models import User
 from perfis.models import Perfil
+from posts.models import Post
 from django.shortcuts import redirect
 
 # Create your views here.
@@ -35,6 +36,8 @@ class RegistrarUsuarioView(View):
 							telefone = dados['telefone'],
 							usuario = usuario)
 			perfil.save()
+			post = Post(user=perfil, postagem='Opa, nenhuma postagem!', init=True)
+			post.save()
 			return redirect('index')
 		
 		return render(request, 'usuarios/registrar.html', {'form': form})

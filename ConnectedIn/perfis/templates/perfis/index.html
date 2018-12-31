@@ -28,7 +28,8 @@
                             <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
                                 <div class="form-group">
                                     <label class="sr-only" for="message">post</label>
-                                    <textarea class="form-control" id="message" name="postagem" rows="3" placeholder="What are you thinking?"></textarea>
+                                    <!--textarea class="form-control" id="message" name="postagem" rows="3" placeholder="What are you thinking?"></textarea-->
+                                    {{form}}
                                 </div>
 
                             </div>
@@ -65,28 +66,24 @@
 
 
 
+        
+<!--TODOS OS POSTS-->
         <div class="panel panel-default">
             <div class="panel-heading">
-                <strong>Todos os Perfis</strong>
+                <strong>Postagens</strong>
             </div>
-            {% if perfis %}
+            {% if posts %}
                 <ul class="list-group">
-                {% for perfil in perfis %}
+                {% for post in posts %}
                     <li class="list-group-item">
-                        <a href="{% url 'exibir' perfil.id %}">    {{ perfil.nome }} / {{ perfil.email }}
-                        </a>
-                        {% if perfil.bloqueado%}
-                            <p>bloqueado.</p>
-                        {% endif %}
+                        <strong>{{post.user.nome}}</strong>
+                        <p>{{post}}</p>
                     </li>
                 {% endfor %}
             {% else %}
-                <p>Não há Perfis Cadastrados!</p>
+                <p>Não há Posts Cadastrados!</p>
             {% endif %}
             </ul>
         </div>
-
         
-
-  
 {% endblock %}
