@@ -15,4 +15,8 @@ def add(request, perfil_id):
 		post = Post(user=perfil, postagem=request.POST['postagem'])
 		post.save()
 	return redirect('index')
-
+def delete(request, post_id):
+	post = Post.objects.get(id=post_id)
+	if post in request.user.perfil.postagens.all():
+		post.delete()
+	return redirect('index')

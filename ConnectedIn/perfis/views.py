@@ -156,4 +156,6 @@ def search(request):
     search = request.GET['word']
     perfis = Perfil.objects.filter(nome__contains=search,bloqueado=False, ativa=True)
     perfil_logado = get_perfil_logado(request)
+    for perfil in perfis:
+        perfil.convidavel = perfil.pode_convidar(perfil_logado)
     return render(request, 'perfis/result_search.html', {'perfis':perfis, 'perfil_logado':perfil_logado})

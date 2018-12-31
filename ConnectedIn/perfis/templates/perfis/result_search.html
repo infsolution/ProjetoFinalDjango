@@ -1,6 +1,20 @@
 {% extends 'perfis/base_b.html' %}
 {% block body %}
+
 {% for perfil in perfis %}
-<a href="{% url 'exibir' perfil.id %}"><strong>{{ perfil.nome }}</strong></a>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">{{perfil.nome}}</h5>
+    <h6 class="card-subtitle mb-2 text-muted">{{perfil.nome_empresa}}</h6>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    {% if perfil.convidavel %}
+    <a href="#" class="card-link">Convidar</a>
+    {% endif %}
+    {% if perfil_logado in perfil.contatos.all %}
+   	<strong>Amigo</strong> 
+   	 <a href="{% url 'exibir' perfil.id %}" class="card-link">Ver perfil</a>
+    {% endif %}
+  </div>
+</div>
 {% endfor %}
 {% endblock %}
