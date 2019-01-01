@@ -9,15 +9,16 @@ from posts.forms import PostModelForm
 
 @login_required
 def index(request):
+    mensagem = ''
     perfil_logado = get_perfil_logado(request)
     if perfil_logado.ativa == False or perfil_logado.bloqueado == True:
-        return render(request,'perfis/transicao.html', {'perfil_logado': perfil_logado})
+        return render(request,'perfis/transicao.html', {'perfil_logado': perfil_logado, 'mensagem':mensagem})
     form = PostModelForm()
     if perfil_logado.usuario.is_superuser:
         return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(),
-         'perfil_logado': perfil_logado, 'form':form, 'posts':getPosts(perfil_logado)})
+         'perfil_logado': perfil_logado, 'form':form, 'posts':getPosts(perfil_logado), 'mensagem':mensagem})
     return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True, bloqueado=False), 
-        'perfil_logado': perfil_logado, 'form':form, 'posts':getPosts(perfil_logado)})
+        'perfil_logado': perfil_logado, 'form':form, 'posts':getPosts(perfil_logado), 'mensagem':mensagem})
 
 def getPosts(perfil_logado):
     perfilPosts=[]
@@ -45,6 +46,9 @@ def exibir_perfil(request, perfil_id):
     if perfil.ativa:
         perfil_logado = get_perfil_logado(request)
         perfil_logado.convidavel = perfil_logado.pode_convidar(perfil)
+        if perfil_logado.usuario.is_superuser:
+            return render(request, 'perfis/perfil.html',{'perfis': Perfil.objects.all(),
+                'perfil': perfil,'perfil_logado': perfil_logado})
         return render(request, 'perfis/perfil.html',{'perfil': perfil,'perfil_logado': perfil_logado})
     else:
         perfil.error_mensage = 'Conta temporariamente desativada!'

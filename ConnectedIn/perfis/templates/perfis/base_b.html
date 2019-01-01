@@ -1,14 +1,15 @@
-{% load static %}
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
 	 <meta charset="utf-8">
 	<title></title>
 	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'fontawesome/css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/basic.css' %}">
 </head>
-<body style="margin-top: 5em">
-	<nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #e3f2fd;">
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="nav-main">
 		<div class="container-fluid">
 		 	<a class="navbar-brand" href="{% url 'index' %}">
 		    	<img src="{% static 'img/photo.jpg' %}" width="30" height="30" alt="">
@@ -26,22 +27,26 @@
 						    <div class="input-group mb-6">
 							  <input type="text" class="form-control" name="word" placeholder="Procure pessoas ou coisas"  aria-describedby="basic-addon2" required="">
 							  <div class="input-group-append">
-							    <button class="btn btn-outline-secondary" type="submit">Prourar</button>
+							    <button class="btn btn-primary" type="submit">Prourar</button>
 							  </div>
 							</div>
 					 	</form>
-			     	</li>
-			     	<li class="nav-item">
+			     	</li>			     	
+			     	<li class="nav-item dropdown">
+				        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opções
+				        </a>
+				        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+				          <!--a class="dropdown-item" href="#">Action</a-->
+				          <a class="dropdown-item" href="{% url 'change_password' %}">Mudar Senha</a>
+				          <div class="dropdown-divider"></div>
+				          <a class="dropdown-item"href="/logout/">Sair</a>
+				        </div>
+				     </li>
+				     <li class="nav-item">
 			        	<a class="nav-link" href="#"><img src="{% static 'img/photo.jpg' %}" width="30" height="30" alt=""></a>
 			     	</li>
-			     	<li class="nav-item">
+				     <li class="nav-item">
 			        	<a class="nav-link" href="{% url 'exibir' perfil_logado.id %}">{{perfil_logado.nome}}</a>
-			     	</li>
-			     	<li class="nav-item">
-			        	<a class="nav-link" href="/logout/">Sair</a>
-			     	</li>
-			     	<li class="nav-item">
-			        	<a class="nav-link" href="{% url 'change_password' %}">Mudar Senha</a>
 			     	</li>
 			    </ul>
 		  	</div>
@@ -53,11 +58,12 @@
     	</div-->
     	<div class="container">
     		<div class="row">
-    			<div class="col-md-3">
-    				<div class="panel panel-default">
+    			<div class="col-md-3" id="nav">
+    				
+    				<div class="card">
 			            {% with total=perfil_logado.contatos.count %}
 			                {% if total %}
-			                    <div class="panel-heading">
+			                    <div class="card-header">
 			                        <strong>Você tem  {{ total }}
 			                            Contato{{ total|pluralize }}
 			                        </strong>
@@ -75,8 +81,8 @@
 			                        {% endfor %}
 			                    </ul>
 			                {% else %}
-			                    <div class="panel-body">
-			                        Não há Contatos! :(
+			                    <div class="pcard-header">
+			                        <strong>Você não tem contatos</strong>
 			                    </div>
 			                {% endif %}
 			            {% endwith %}
@@ -87,40 +93,52 @@
     				{% block body %}
         			{% endblock %}
     			</div>
-    			<div class="col-md-3">
-    				<div class="panel panel-default">
-			            {% with total=perfil_logado.convites_recebidos.count %}
-			                {% if total %}
-			                    <div class="panel-heading">
-			                        <strong> {{ total }}
-			                            Convite{{ total|pluralize }} aguardando Aprovação</strong>
-			                    </div>
-			                    <ul class="list-group">
-			                        {% for convite in perfil_logado.convites_recebidos.all %}
-			                            <li class="list-group-item">
-			                                <ul class="list-inline">
-			                                    <li class="list-inline-item">
-			                                        <a href="{% url 'exibir' convite.solicitante.id %}">
-			                                            {{ convite.solicitante.nome }}
-			                                        </a>
-			                                    </li>
-			                                    <li class="list-inline-item pull-right">
-			                                        <a href="{% url 'recusar' convite.id %}">Recusar</a>
-			                                    </li>
-			                                    <li class="list-inline-item pull-right">
-			                                        <a href="{% url 'aceitar' convite.id %}">Aceitar</a>
-			                                    </li>
-			                                </ul>
-			                            </li>
-			                        {% endfor %}
-			                    </ul>
-			                {% else %}
-			                    <div class="panel-body">
-			                        Não há Convites
-			                    </div>
-			                {% endif %}
-			            {% endwith %}
-			        </div>
+    			<div class="col-md-3" id="aside">
+    				<div class="card">
+					 	<div class="card-header">
+					    <strong>Convites enviados</strong>
+					 	</div>
+					 	<ul class="list-group list-group-flush">
+					 		{% for convite in perfil_logado.convites_feitos.all %}
+					    	<li class="list-group-item">
+					    		<div class="card-body" id="card-body">
+					    			<h6 class="card-title">{{convite.convidado.nome }}</h6>
+					    			<a href="{% url 'recusar' convite.id %}" class="card-link">Cancelar</a>
+					    		</div>
+					    	</li>
+					 		{% endfor %}
+					 	</ul>
+					</div>
+					<hr>
+					<div class="card">
+						 {% with total=perfil_logado.convites_recebidos.count %}
+						 {% if total %}
+						<div class="card-header">
+							<strong> 
+								{{ total }} Convite{{ total|pluralize }} aguardando Aprovação
+			                </strong>
+						</div>
+						<ul class="list-group list-group-flush">
+						{% for convite in perfil_logado.convites_recebidos.all %}
+							<li class="list-group-item">
+								<div class="card-body" id="card-body">
+									<h6 class="card-text">{{ convite.solicitante.nome }}</h6>
+									<a href="{% url 'aceitar' convite.id %}" class="card-link">Aceitar</a>
+									<a href="{% url 'recusar' convite.id %}" class="card-link">Recusar</a>
+									
+								</div>
+								
+							</li>
+						{% endfor %}	
+						</ul>
+						{% else %}
+						<div class="card-header">
+							<strong>Nenhum convite no momento.</strong>
+						</div>	
+						{% endif %}
+						{% endwith %}
+					</div>
+					    	
 			        {% if perfil_logado.usuario.is_superuser %}
 			        <div class="panel panel-default">
 			            <div class="panel-heading">
@@ -147,7 +165,7 @@
     	</div>
     	<div class="footer">
     		<div class="col-xs-12 text-center">
-		      <p>&copy; ConnectedIn.</p>
+		      <p>&copy; SosiAll.</p>
 		    </div>
     	</div>
 

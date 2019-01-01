@@ -2,7 +2,8 @@ from perfis import views
 from django.urls import path
 from django.contrib.auth import views as v
 from usuarios.views import RegistrarUsuarioView
-
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
 	path('', views.index, name='index'),
 	path('perfil/<int:perfil_id>', views.exibir_perfil, name='exibir'),
@@ -22,3 +23,5 @@ urlpatterns = [
 	path('desbloquear/<int:perfil_id>',views.desbloquear, name='desbloquear'),
 	path('search', views.search, name='search'),
 ]
+if settings.DEBUG:
+	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

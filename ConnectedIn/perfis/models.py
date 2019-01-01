@@ -14,6 +14,8 @@ class Perfil(models.Model):
     justificativa = models.TextField(null=True)
     bloqueado = models.BooleanField(default=False)
     error_mensage = models.CharField(max_length=512, null=True)
+    foto = models.ImageField(blank=True, null=True, upload_to='media/')
+    capa = models.ImageField(blank=True, null=True, upload_to='media/')
     @property
     def email(self):
         return self.usuario.email

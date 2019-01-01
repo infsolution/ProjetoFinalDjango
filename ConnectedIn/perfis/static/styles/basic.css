@@ -1,0 +1,21 @@
+#nav-main{
+	background-color: #00FF00;
+}
+
+body{
+	background-color: #EDEDED;
+	margin-top: 5em;
+}
+
+#card-body{
+	height: 4em;
+}
+
+.card-header{
+	background-color: #FFFFFF;
+}
+
+a:hover{
+	text-decoration: none;
+	color: #00FF00;
+}

@@ -6,32 +6,31 @@
         {% csrf_token %}
 
         <h2 class="form-signin-heading">Crie seu usuário</h2>
-        <input name="email" id="id_email" class="form-control"
-               placeholder="Email*" required autofocus>
-
-        <input name="nome" id="id_nome" class="form-control"
-               placeholder="Nome de Usuário*" required>
-
-        <input name="senha" id="id_senha" class="form-control"
-               type="password" placeholder="Senha*" required>
+        <p>
+        <input name="email" id="id_email" class="form-control" placeholder="Email*" required autofocus>
+        </p>
+        <p>
+        <input name="nome" id="id_nome" class="form-control" placeholder="Nome de Usuário*" required>
+        </p>
+        <p>
+        <input name="senha" id="id_senha" class="form-control" type="password_1" placeholder="Senha*" required>
+        </p>
+        <p><!--FALTA VALIDAR AS SENHAS NO VIEWS-->
+        <input name="senha" id="id_senha" class="form-control" type="password" placeholder="Confirme Sua Senha*" required>
+        <p>
+        <input name="telefone" id="id_telefone" class="form-control" placeholder="Telefone*">
+        </p>
+        <p>
+        <input name="nome_empresa" id="id_nome_empresa" class="form-control" placeholder="Empresa*">
+      </p>
         <hr/>
 
-        <input name="telefone" id="id_telefone" class="form-control"
-               placeholder="Telefone*">
-
-        <input name="nome_empresa" id="id_nome_empresa"
-               class="form-control" placeholder="Empresa*">
-
-        <hr/>
-
-        <button class="btn btn-lg btn-primary btn-block"
-                type="submit" value="Login">Registrar
+        <button class="btn btn-lg btn-primary btn-block" type="submit" value="Login">Registrar
         </button>
 
         {% if form.errors %}
             <div class="alert alert-danger">
-                <button type="button" class="close"
-                        data-dismiss="alert" aria-hidden="true">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
                 </button>
                 {{ form.non_field_errors }}
             </div>

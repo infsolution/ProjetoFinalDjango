@@ -10,3 +10,9 @@ class Post(models.Model):
 
     class Meta:
         ordering = ('-created_at',)
+
+
+class Image(models.Model):
+	post = models.ForeignKey(Post, related_name='imagens', on_delete=models.CASCADE)
+	foto = models.ImageField(blank=True, null=True, upload_to='media/')
+	

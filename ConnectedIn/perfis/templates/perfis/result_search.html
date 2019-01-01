@@ -8,7 +8,7 @@
     <h6 class="card-subtitle mb-2 text-muted">{{perfil.nome_empresa}}</h6>
     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
     {% if perfil.convidavel %}
-    <a href="#" class="card-link">Convidar</a>
+    <a href="{% url 'convidar' perfil.id %}" class="card-link">Convidar</a>
     {% endif %}
     {% if perfil_logado in perfil.contatos.all %}
    	<strong>Amigo</strong> 

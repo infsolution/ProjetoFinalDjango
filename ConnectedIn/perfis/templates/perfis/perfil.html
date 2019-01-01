@@ -10,15 +10,15 @@
             <h3>Atenção!</h3>
             <p>{{perfil.error_mensage}}</p>
         </div>
+
         {% if perfil_logado.usuario.is_superuser %}
-        <a href="{% url 'desbloquear' perfil.id %}">desbloquear</a>
+        <a href="{% url 'desbloquear' perfil.id %}">Desbloquear</a>
         {% endif %}
+     
     {% elif perfil.ativa %}
         {% if perfil_logado == perfil %}
             <a href="{% url 'desativar' %}"> Desativar conta</a>
         {% endif %}
-
-    <div class="col-lg-12">
         <h2 style="margin-top: 0px">{{ perfil.nome }}</h2>
         <address>
             <a href="mailto:{{ perfil.email }}">{{ perfil.email }}</a>
@@ -116,7 +116,4 @@
                 <hr>
     <!--Fim postagem-->
     {% endfor %}
-
-
-    </div>    
 {% endblock %}
