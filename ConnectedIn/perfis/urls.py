@@ -22,6 +22,7 @@ urlpatterns = [
 	path('bloquear/<int:perfil_id>',views.bloquear,name='bloquear'),
 	path('desbloquear/<int:perfil_id>',views.desbloquear, name='desbloquear'),
 	path('search', views.search, name='search'),
+	path('updatefoto',views.updatefoto, name='updatefoto'),
 ]
 if settings.DEBUG:
 	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

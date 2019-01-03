@@ -1,3 +1,4 @@
+from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -40,6 +41,7 @@ def getPosts(perfil_logado):
 @login_required
 def exibir_perfil(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
+    form = PostModelForm()
     if perfil.bloqueado:
         perfil.error_mensage = 'Conta bloqueada pelos administradores!'
         return render(request, 'perfis/perfil.html',{'perfil_logado': get_perfil_logado(request), 'perfil':perfil})
@@ -48,8 +50,9 @@ def exibir_perfil(request, perfil_id):
         perfil_logado.convidavel = perfil_logado.pode_convidar(perfil)
         if perfil_logado.usuario.is_superuser:
             return render(request, 'perfis/perfil.html',{'perfis': Perfil.objects.all(),
-                'perfil': perfil,'perfil_logado': perfil_logado})
-        return render(request, 'perfis/perfil.html',{'perfil': perfil,'perfil_logado': perfil_logado})
+                'perfil': perfil,'perfil_logado': perfil_logado, 'form':form})
+        return render(request, 'perfis/perfil.html',{'perfil': perfil,
+            'perfil_logado': perfil_logado, 'form':form})
     else:
         perfil.error_mensage = 'Conta temporariamente desativada!'
         return render(request, 'perfis/perfil.html',{'perfil_logado': get_perfil_logado(request),'perfil':perfil})
@@ -162,4 +165,18 @@ def search(request):
     perfil_logado = get_perfil_logado(request)
     for perfil in perfis:
         perfil.convidavel = perfil.pode_convidar(perfil_logado)
-    return render(request, 'perfis/result_search.html', {'perfis':perfis, 'perfil_logado':perfil_logado})
+    if perfil_logado.usuario.is_superuser:
+        return render(request, 'perfis/result_search.html', {'perfis_search':perfis, 
+        'perfil_logado':perfil_logado, 'perfis':Perfil.objects.all()})
+    return render(request, 'perfis/result_search.html', {'perfis_search':perfis, 
+        'perfil_logado':perfil_logado})
+def updatefoto(request):
+    if request.method =='POST':
+        up_image = request.FILES['foto']
+        fs = FileSystemStorage()
+        name = fs.save(up_image.name, up_image)
+        url = fs.url(name)
+        perfil = Perfil.objects.get(id=request.user.perfil.id) 
+        perfil.foto = url
+        perfil.save()
+        return redirect('exibir', perfil.id)
