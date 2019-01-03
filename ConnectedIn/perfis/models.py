@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+
 class Perfil(models.Model):
     nome = models.CharField(max_length=255, null=False)
     telefone = models.CharField(max_length=15, null=False)
@@ -16,6 +17,7 @@ class Perfil(models.Model):
     error_mensage = models.CharField(max_length=512, null=True)
     foto = models.ImageField(blank=True, null=True, upload_to='media/')
     capa = models.ImageField(blank=True, null=True, upload_to='media/')
+
     @property
     def email(self):
         return self.usuario.email
@@ -46,6 +48,7 @@ class Perfil(models.Model):
     def __str__(self):
         return self.nome
 
+
 class Convite(models.Model):
     solicitante = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='convites_feitos')
     convidado = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='convites_recebidos')
@@ -57,4 +60,3 @@ class Convite(models.Model):
 
     def recusar(self):
         self.delete()
-
