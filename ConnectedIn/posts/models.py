@@ -40,14 +40,14 @@ class Chat(models.Model):
     )
     members = models.ManyToManyField(User, verbose_name=_("Member"))
 
-    @models.permalink
+    #@models.permalink
     def get_absolute_url(self):
         return 'users:messages', (), {'chat_id': self.pk}
 
 
 class Message(models.Model):
-    chat = models.ForeignKey(Chat, verbose_name=_("Chat"))
-    author = models.ForeignKey(User, verbose_name=_("User"))
+    chat = models.ForeignKey(Chat, verbose_name=_("Chat"), on_delete=models.CASCADE)
+    author = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     message = models.TextField(_("Message"))
     pub_date = models.DateTimeField(_('Message date'), default=timezone.now)
     is_readed = models.BooleanField(_('Readed'), default=False)

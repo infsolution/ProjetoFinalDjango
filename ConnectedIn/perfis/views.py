@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from perfis.models import *
 from posts.forms import PostModelForm
+from django.core.paginator import Paginator, InvalidPage
 
 @login_required
 def index(request):
@@ -159,7 +160,7 @@ def desbloquear(request, perfil_id):
     perfil.save()
     return redirect('index')
 
-def search(request):
+def searchOk(request):
     search = request.GET['word']
     perfis = Perfil.objects.filter(nome__contains=search,bloqueado=False, ativa=True)
     perfil_logado = get_perfil_logado(request)
@@ -170,6 +171,33 @@ def search(request):
         'perfil_logado':perfil_logado, 'perfis':Perfil.objects.all()})
     return render(request, 'perfis/result_search.html', {'perfis_search':perfis, 
         'perfil_logado':perfil_logado})
+
+
+
+
+def search(request):
+    perfis = Perfil.objects.all();
+    perfil_logado = get_perfil_logado(request)
+    ITEMS_PER_PAGE = 5
+    search = request.GET.get('word')
+    if search:
+        perfis = perfis.filter(nome__contains=search,bloqueado=False, ativa=True)
+    paginator = Paginator(perfis, ITEMS_PER_PAGE)
+    page = request.GET.get('page',1)
+    try:
+        perfis_search = paginator.get_page(page)
+        for perfil in perfis_search:
+            perfil.convidavel = perfil.pode_convidar(perfil_logado)
+    except InvalidPage:
+        perfis_search = paginator.get_page(1)
+    if perfil_logado.usuario.is_superuser:
+        return render(request, 'perfis/result_search.html', {'perfis_search':perfis_search, 
+        'perfil_logado':perfil_logado, 'perfis':Perfil.objects.all()})
+    return render(request, 'perfis/result_search.html', {
+        'perfis_search':perfis_search, 'total':total, 'perfil_logado':perfil_logado
+        })
+
+
 def updatefoto(request):
     if request.method =='POST':
         up_image = request.FILES['foto']

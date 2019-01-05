@@ -35,7 +35,7 @@ def delete(request, post_id):
     return redirect('index')
 
 
-class DialogsView(View):
+'''class DialogsView(View):
     def get(self, request):
         chats = Chat.objects.filter(members__in=[request.user.id])
         return render(request, 'posts/templates/posts/dialogs.html', {'user_profile': request.user, 'chats': chats})
@@ -82,4 +82,4 @@ class CreateDialogView(View):
             chat.members.add(user_id)
         else:
             chat = chats.first()
-        return redirect(reverse('users:messages', kwargs={'chat_id': chat.id}))
+        return redirect(reverse('users:messages', kwargs={'chat_id': chat.id}))'''

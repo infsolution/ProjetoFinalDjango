@@ -47,7 +47,7 @@
 				        </div>
 				     </li>
 				     <li class="nav-item">
-			        	<a class="nav-link" href="#"><img class="rounded-circle" src="{% static 'img/photo.jpg' %}" width="30" alt=""></a>
+			        	<a class="nav-link" href="#"><img class="rounded-circle" src="{{perfil_logado.foto}}" width="30" alt=""></a>
 			     	</li>
 				     <li class="nav-item">
 			        	<a class="nav-link" href="{% url 'exibir' perfil_logado.id %}">{{perfil_logado.nome}}</a>
