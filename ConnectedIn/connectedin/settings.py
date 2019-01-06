@@ -121,20 +121,28 @@ LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
 LOGIN_REDIRECT_URL = '/'
 
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Setup das Variáveis para Envio de Emails
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com' # mail service smtp
-<<<<<<< HEAD
-EMAIL_HOST_USER = '@gmail.com' # email id
-EMAIL_HOST_PASSWORD = '#' #password
-=======
-EMAIL_HOST_USER = '' # email id
-EMAIL_HOST_PASSWORD = '' #password
->>>>>>> 686460ff5ce57ea7f97c251996651cf063f1a5f3
+EMAIL_HOST = 'smtp.gmail.com'  # mail service smtp
+<< << << < HEAD
+EMAIL_HOST_USER = '@gmail.com'  # email id
+EMAIL_HOST_PASSWORD = '#'  # password
+== == == =
+EMAIL_HOST_USER = ''  # email id
+EMAIL_HOST_PASSWORD = ''  # password
+>> >> >> > 686460ff5ce57ea7f97c251996651cf063f1a5f3
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+# Internacionalização
+
+USE_I18N = True
+LANGUAGES = (
+    ('en', u'English'),
+    ('pt-br', u'Português'),
+)
+LOCALE_PATHS = (BASE_DIR('locale'),)
