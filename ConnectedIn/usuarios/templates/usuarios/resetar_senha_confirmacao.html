@@ -1,12 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-    <form method="POST">
-        {% csrf_token %} {{ form.as_p }}
-        <button type="submit">Confirmar</button>
+{% extends 'usuarios/base_usuario.html' %}
+{% block body %}
+	{% if msg_error %}
+        <div class="alert alert-danger" role="alert">
+          <strong>{{msg_error}}</strong>
+        </div>
+    {% endif %}
+
+    <form method="POST" class="form-signin" action="{% url 'confirm' %}">
+        {% csrf_token %}
+        	<input type="hidden" name="user_id" value="{{usuario.id}}">
+          	<label class="form-signin-heading">Informe sua nova senha</label>
+
+        	<input type="password" class="form-control" name="password_1" placeholder="">
+
+        	<label class="form-signin-heading">Confirnar senha</label>
+           	<input type="password" class="form-control" name="password" placeholder="">
+
+        <button type="submit" class="btn btn-primary">Confirmar</button>
     </form>
-</body>
-</html>
+{% endblock %}

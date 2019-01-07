@@ -105,7 +105,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-BR'
 
-TIME_ZONE = 'America/Fortaleza'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -126,7 +126,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Setup das Variáveis para Envio de Emails
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # mail service smtp
 EMAIL_HOST_USER = '@gmail.com'  # email id
 EMAIL_HOST_PASSWORD = '#'  # password
@@ -134,6 +134,7 @@ EMAIL_HOST_USER = ''  # email id
 EMAIL_HOST_PASSWORD = ''  # password
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+CONTACT_EMAIL = 'contato@Sosiall.com'
 
 # Internacionalização
 

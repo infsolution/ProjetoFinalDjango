@@ -1,18 +1,17 @@
-{% extends "usuarios/base_usuario.html" %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Recuperar Senha</title>
-</head>
-<body>
-    <form method="post">
-    	{% csrf_token %}
-        <div>
-            {{ form.email.errors }}
-            <label for="id_email">{% trans 'Endereço de Email:' %}</label>
-            {{ form.email }}
+{% extends 'usuarios/base_usuario.html' %}
+{% block body %}
+    {% if msg_error %}
+        <div class="alert alert-danger" role="alert">
+          <strong>{{msg_error}}</strong>
         </div>
-        <input type="submit" value="{% trans 'Resetar minha Senha' %}" />
+    {% endif %}
+
+    <form action="{% url 'reset_password' %}" method="POST" class="form-signin" role="form">
+    	{% csrf_token %}
+            <h2 class="form-signin-heading">Informe seu email</h2>
+        <p>
+            <input class="form-control" type="text" name="email">
+        </p>
+        <button type="submit" class="btn btn-primary">Enviar email</button>
     </form>
-</body>
-</html>
+{% endblock %}
