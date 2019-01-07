@@ -63,7 +63,7 @@
     	<div class="container">
     		<div class="row">
     			<div class="col-md-3" id="nav">
-    				
+    			{% if perfil_logado.bloqueado == False %}	
     				<div class="card">
 			            {% with total=perfil_logado.contatos.count %}
 			                {% if total %}
@@ -91,13 +91,14 @@
 			                {% endif %}
 			            {% endwith %}
 			        </div>
-    				
+    			{% endif %}
     			</div>
     			<div class="col-md-6">
     				{% block body %}
         			{% endblock %}
     			</div>
     			<div class="col-md-3" id="aside">
+    			{% if perfil_logado.bloqueado == False %}	
     				<div class="card">
 					 	<div class="card-header">
 					    <strong>Convites enviados</strong>
@@ -115,6 +116,7 @@
 					</div>
 					<hr>
 					<div class="card">
+						 
 						 {% with total=perfil_logado.convites_recebidos.count %}
 						 {% if total %}
 						<div class="card-header">
@@ -141,8 +143,9 @@
 						</div>	
 						{% endif %}
 						{% endwith %}
+					
 					</div>
-					    	
+				{% endif %}	    	
 			        {% if perfil_logado.usuario.is_superuser %}
 			        <div class="panel panel-default">
 			            <div class="panel-heading">

@@ -160,19 +160,6 @@ def desbloquear(request, perfil_id):
     perfil.save()
     return redirect('index')
 
-def searchOk(request):
-    search = request.GET['word']
-    perfis = Perfil.objects.filter(nome__contains=search,bloqueado=False, ativa=True)
-    perfil_logado = get_perfil_logado(request)
-    for perfil in perfis:
-        perfil.convidavel = perfil.pode_convidar(perfil_logado)
-    if perfil_logado.usuario.is_superuser:
-        return render(request, 'perfis/result_search.html', {'perfis_search':perfis, 
-        'perfil_logado':perfil_logado, 'perfis':Perfil.objects.all()})
-    return render(request, 'perfis/result_search.html', {'perfis_search':perfis, 
-        'perfil_logado':perfil_logado})
-
-
 
 
 def search(request):
@@ -194,7 +181,7 @@ def search(request):
         return render(request, 'perfis/result_search.html', {'perfis_search':perfis_search, 
         'perfil_logado':perfil_logado, 'perfis':Perfil.objects.all()})
     return render(request, 'perfis/result_search.html', {
-        'perfis_search':perfis_search, 'total':total, 'perfil_logado':perfil_logado
+        'perfis_search':perfis_search, 'perfil_logado':perfil_logado
         })
 
 

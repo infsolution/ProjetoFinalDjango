@@ -1,11 +1,11 @@
-{% extends 'perfis/base.html' %}
+{% extends 'perfis/base_b.html' %}
 {% block body %}
 
 {% if perfil_logado.ativa == False %}
-	<h1>conta inativa</h1>
+	<h1>Conta inativa</h1>
 	<form action="{% url 'reativar' %}" method="POST" accept-charset="utf-8">
 		{% csrf_token %}
-		<button type="submit">REATIVAR CONTA</button>
+		<button type="submit" class="btn btn-primary">REATIVAR CONTA</button>
 	</form>
 {% endif %}
 
