@@ -2,6 +2,8 @@ from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
 from perfis.models import *
 from posts.models import *
+from datetime import datetime
+from django.utils import timezone
 
 
 def add(request, perfil_id):
@@ -12,6 +14,7 @@ def add(request, perfil_id):
             post = Post.objects.get(id=perfil.postagens.all()[0].id)
             post.init = False
             post.postagem = request.POST['postagem']
+            post.created_at = timezone.make_aware(datetime.now(),timezone.get_current_timezone())
             post.save()
         else:
             post = Post(user=perfil, postagem=request.POST['postagem'])
@@ -25,8 +28,9 @@ def add(request, perfil_id):
                 url = fs.url(name)
                 foto = Image(post=post, foto=url)
                 foto.save()
+        message = Feedback(perfil=perfil,message='Postagem criada com sucesso.')
+        message.save()
         return redirect('index')
-
 
 def delete(request, post_id):
     post = Post.objects.get(id=post_id)

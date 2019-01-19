@@ -4,7 +4,7 @@ from django.shortcuts import render,redirect
 from django.views.generic.base import View
 from usuarios.forms import RegistrarUsuarioForm
 from django.contrib.auth.models import User
-from perfis.models import Perfil
+from perfis.models import *
 from posts.models import Post
 from usuarios.models import *
 from django.core.mail import send_mail
@@ -34,7 +34,9 @@ class RegistrarUsuarioView(View):
 			perfil.save()
 			post = Post(user=perfil, postagem='Opa, nenhuma postagem!', init=True)
 			post.save()
-			return redirect('index')
+			message = Feedback(perfil=perfil,message='Perfil criado com sucesso.')
+			message.save()
+			return redirect('login')
 		
 		return render(request, 'usuarios/registrar.html', {'form': form})
 

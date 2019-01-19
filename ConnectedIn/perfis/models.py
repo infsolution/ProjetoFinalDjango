@@ -60,3 +60,9 @@ class Convite(models.Model):
 
     def recusar(self):
         self.delete()
+
+class Feedback(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='Feedback')
+    message = models.CharField(max_length=512)
+    def __str__(self):
+        return self.message
