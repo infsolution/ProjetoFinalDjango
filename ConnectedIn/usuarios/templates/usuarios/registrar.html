@@ -1,10 +1,17 @@
 {% extends "usuarios/base_usuario.html" %}
 
 {% block body %}
+    {% if message %}
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <strong><p> {{ message }}</p></strong>
+        </div>
+     {% endif %}
     <form class="form-signin" method="post"
           action="{% url 'registrar' %}">
         {% csrf_token %}
-
         <h2 class="form-signin-heading">Crie seu usuário</h2>
         <p>
         <input name="email" id="id_email" class="form-control" placeholder="Email*" required autofocus>
@@ -13,9 +20,9 @@
         <input name="nome" id="id_nome" class="form-control" placeholder="Nome de Usuário*" required>
         </p>
         <p>
-        <input name="senha" id="id_senha" class="form-control" type="password_1" placeholder="Senha*" required>
+        <input name="senha_1" id="id_senha" class="form-control" type="password" placeholder="Senha*" required>
         </p>
-        <p><!--FALTA VALIDAR AS SENHAS NO VIEWS-->
+        <p>
         <input name="senha" id="id_senha" class="form-control" type="password" placeholder="Confirme Sua Senha*" required>
         <p>
         <input name="telefone" id="id_telefone" class="form-control" placeholder="Telefone*">

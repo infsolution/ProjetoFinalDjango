@@ -168,5 +168,39 @@
                 <p>Não há Posts Cadastrados!</p>
             {% endif %}
         </div>
+
+        <nav aria-label="...">
+          <ul class="pagination">
+            {% if posts.has_previous %}
+             <li class="page-item">
+              <a class="page-link" href="?page=1" tabindex="-1">&laquo;</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ posts.previous_page_number }}" tabindex="-1">Anterior</a>
+            </li>
+            {% endif %}
+            {% for page in  posts.paginator.page_range %}
+            <li class="page-item active">
+              {% if posts.number == page %}
+              <!--a class="page-link" href="?page={{perfis_search.number}}">{{perfis_search.number}}</a-->
+              <span class="page-link">{{posts.number}}<span class="sr-only">(current)</span></span>
+              {% else %}
+              <li class="page-item">
+              <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+              {% endif %}
+            </li>
+            
+            {% endfor %}
+            <!--li class="page-item"><a class="page-link" href="#">3</a></li-->
+              {% if posts.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ posts.next_page_number }}">Próxima</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ posts.paginator.num_pages }}"> &raquo;</a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
         
 {% endblock %}

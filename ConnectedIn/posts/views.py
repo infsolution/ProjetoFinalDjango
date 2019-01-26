@@ -4,8 +4,10 @@ from perfis.models import *
 from posts.models import *
 from datetime import datetime
 from django.utils import timezone
+from django.db import transaction, IntegrityError
 
 
+@transaction.atomic
 def add(request, perfil_id):
     if request.method == 'POST':
         perfil = Perfil.objects.get(id=perfil_id)
@@ -20,14 +22,17 @@ def add(request, perfil_id):
             post = Post(user=perfil, postagem=request.POST['postagem'])
             post.save()
         if request.FILES:
-            for image in request.FILES.getlist('fotos_post'):
-                print(image)
-                up_image = image
-                fs = FileSystemStorage()
-                name = fs.save(up_image.name, up_image)
-                url = fs.url(name)
-                foto = Image(post=post, foto=url)
-                foto.save()
+            try:
+                with transaction.atomic():
+                    for image in request.FILES.getlist('fotos_post'):
+                        up_image = image
+                        fs = FileSystemStorage()
+                        name = fs.save(up_image.name, up_image)
+                        url = fs.url(name)
+                        foto = Image(post=post, foto=url)
+                        foto.save()
+            except IntegrityError:
+                handle_exception()
         message = Feedback(perfil=perfil,message='Postagem criada com sucesso.')
         message.save()
         return redirect('index')
@@ -36,6 +41,8 @@ def delete(request, post_id):
     post = Post.objects.get(id=post_id)
     if post in request.user.perfil.postagens.all() or request.user.is_superuser:
         post.delete()
+    fed = Feedback(perfil=request.user.perfil,message='Postagem apagada!')
+    fed.save()
     return redirect('index')
 
 

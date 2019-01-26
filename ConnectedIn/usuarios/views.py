@@ -22,15 +22,13 @@ class RegistrarUsuarioView(View):
 
 		if (form.is_valid()) :
 			dados = form.cleaned_data
-
-			usuario = User.objects.create_user(dados['nome'],
-						   dados['email'],
-						   dados['senha'])
-
-			perfil = Perfil(nome = usuario.username, 
-							nome_empresa = dados['nome_empresa'],
-							telefone = dados['telefone'],
-							usuario = usuario)
+			if request.POST['senha_1'] != request.POST['senha']:
+				message = 'Atençao! As senhas não conferem.'
+				form = RegistrarUsuarioForm(request.POST)
+				return render(request,'usuarios/registrar.html', {'form':form, 'message':message})
+			usuario = User.objects.create_user(dados['nome'], dados['email'],dados['senha'])
+			perfil = Perfil(nome = usuario.username, nome_empresa = dados['nome_empresa'],
+							telefone = dados['telefone'], usuario = usuario)
 			perfil.save()
 			post = Post(user=perfil, postagem='Opa, nenhuma postagem!', init=True)
 			post.save()

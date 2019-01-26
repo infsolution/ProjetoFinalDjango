@@ -8,12 +8,21 @@ from django.shortcuts import render
 from perfis.models import *
 from posts.forms import PostModelForm
 from django.core.paginator import Paginator, InvalidPage
+from django.db import transaction
 
 @login_required
 def index(request):
     perfil_logado = get_perfil_logado(request)
     messages = Feedback.objects.filter(perfil=perfil_logado)
     feedbacks = []
+    ITEMS_PER_PAGE = 10
+    posts = getPosts(perfil_logado)
+    paginator = Paginator(posts, ITEMS_PER_PAGE)
+    page = request.GET.get('page',1)
+    try:
+        posts_page = paginator.get_page(page)
+    except InvalidPage:
+        posts_page = paginator.get_page(1)
     for msg in messages:
         feedbacks.append(msg.message)
         msg.delete()
@@ -22,9 +31,9 @@ def index(request):
     form = PostModelForm()
     if perfil_logado.usuario.is_superuser:
         return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(),
-         'perfil_logado': perfil_logado, 'form':form, 'posts':getPosts(perfil_logado), 'messages':feedbacks})
+         'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
     return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True, bloqueado=False), 
-        'perfil_logado': perfil_logado, 'form':form, 'posts':getPosts(perfil_logado), 'messages':feedbacks})
+        'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
 
 
 def getPosts(perfil_logado):
@@ -49,6 +58,19 @@ def boobleSort(posts):
 @login_required
 def exibir_perfil(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
+    messages = Feedback.objects.filter(perfil=get_perfil_logado(request))
+    feedbacks = []
+    for msg in messages:
+        feedbacks.append(msg.message)
+        msg.delete()
+    posts = perfil.postagens.all()
+    ITEMS_PER_PAGE = 5
+    paginator = Paginator(posts, ITEMS_PER_PAGE)
+    page = request.GET.get('page',1)
+    try:
+        posts_page = paginator.get_page(page)
+    except InvalidPage:
+        posts_page = paginator.get_page(1)
     form = PostModelForm()
     if perfil.bloqueado:
         perfil.error_mensage = 'Conta bloqueada pelos administradores!'
@@ -58,9 +80,9 @@ def exibir_perfil(request, perfil_id):
         perfil_logado.convidavel = perfil_logado.pode_convidar(perfil)
         if perfil_logado.usuario.is_superuser:
             return render(request, 'perfis/perfil.html',{'perfis': Perfil.objects.all(),
-                'perfil': perfil,'perfil_logado': perfil_logado, 'form':form})
+                'perfil': perfil,'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
         return render(request, 'perfis/perfil.html',{'perfil': perfil,
-            'perfil_logado': perfil_logado, 'form':form})
+            'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
     else:
         perfil.error_mensage = 'Conta temporariamente desativada!'
         return render(request, 'perfis/perfil.html',{'perfil_logado': get_perfil_logado(request),'perfil':perfil})
@@ -164,12 +186,16 @@ def bloquear(request, perfil_id):
         perfil = Perfil.objects.get(id=perfil_id)
         perfil.bloqueado = True
         perfil.save()
+        fed = Feedback(perfil=get_perfil_logado(request),message='Você bloqueou '+perfil.nome+'!')
+        fed.save()
         return redirect('index')
 
 def desbloquear(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
     perfil.bloqueado = False
     perfil.save()
+    fed = Feedback(perfil=get_perfil_logado(request),message='Você desbloqueou '+perfil.nome+'!')
+    fed.save()
     return redirect('index')
 
 
@@ -206,4 +232,6 @@ def updatefoto(request):
         perfil = Perfil.objects.get(id=request.user.perfil.id) 
         perfil.foto = url
         perfil.save()
+        fed = Feedback(perfil=get_perfil_logado(request),message='Sua foto do perfil foi atualizada!')
+        fed.save()
         return redirect('exibir', perfil.id)
