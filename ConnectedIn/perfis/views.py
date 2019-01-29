@@ -79,7 +79,7 @@ def exibir_perfil(request, perfil_id):
         perfil_logado = get_perfil_logado(request)
         perfil_logado.convidavel = perfil_logado.pode_convidar(perfil)
         if perfil_logado.usuario.is_superuser:
-            return render(request, 'perfis/perfil.html',{'perfis': Perfil.objects.all(),
+            return render(request, 'perfis/perfil.html',{'perfis': Perfil.objects.all()[:10],
                 'perfil': perfil,'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
         return render(request, 'perfis/perfil.html',{'perfil': perfil,
             'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
