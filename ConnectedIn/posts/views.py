@@ -12,28 +12,27 @@ def add(request, perfil_id):
     if request.method == 'POST':
         perfil = Perfil.objects.get(id=perfil_id)
         post = None
-        if len(perfil.postagens.all()) == 1 and perfil.postagens.all()[0].init == True:
-            post = Post.objects.get(id=perfil.postagens.all()[0].id)
-            post.init = False
-            post.postagem = request.POST['postagem']
-            post.created_at = timezone.make_aware(datetime.now(),timezone.get_current_timezone())
-            post.save()
-        else:
-            post = Post(user=perfil, postagem=request.POST['postagem'])
-            post.save()
-        if request.FILES:
-            try:
-                with transaction.atomic():
-                    for image in request.FILES.getlist('fotos_post'):
-                        up_image = image
-                        fs = FileSystemStorage()
-                        name = fs.save(up_image.name, up_image)
-                        url = fs.url(name)
-                        foto = Image(post=post, foto=url)
-                        foto.save()
-            except IntegrityError:
-                handle_exception()
-        message = Feedback(perfil=perfil,message='Postagem criada com sucesso.')
+        message = 'Desculpe, houve um erro ao criar seu post!'
+        with transaction.atomic():
+            if len(perfil.postagens.all()) == 1 and perfil.postagens.all()[0].init == True:
+                post = Post.objects.get(id=perfil.postagens.all()[0].id)
+                post.init = False
+                post.postagem = request.POST['postagem']
+                post.created_at = timezone.make_aware(datetime.now(),timezone.get_current_timezone())
+                post.save()
+            else:
+                post = Post(user=perfil, postagem=request.POST['postagem'])
+                post.save()
+            if request.FILES:
+                for image in request.FILES.getlist('fotos_post'):
+                    up_image = image
+                    fs = FileSystemStorage()
+                    name = fs.save(up_image.name, up_image)
+                    url = fs.url(name)
+                    foto = Image(post=post, foto=url)
+                    foto.save()
+            message = 'Post criado com sucesso!'
+        message = Feedback(perfil=perfil,message=message)
         message.save()
         return redirect('index')
 

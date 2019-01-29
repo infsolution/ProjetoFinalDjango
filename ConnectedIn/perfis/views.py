@@ -30,7 +30,7 @@ def index(request):
         return render(request,'perfis/transicao.html', {'perfil_logado': perfil_logado, 'messages':feedbacks})
     form = PostModelForm()
     if perfil_logado.usuario.is_superuser:
-        return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all(),
+        return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all()[:10],
          'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
     return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True, bloqueado=False), 
         'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
@@ -235,3 +235,19 @@ def updatefoto(request):
         fed = Feedback(perfil=get_perfil_logado(request),message='Sua foto do perfil foi atualizada!')
         fed.save()
         return redirect('exibir', perfil.id)
+def perfil_list(request):
+    if request.user.is_superuser:
+        ITEMS_PER_PAGE = 10
+        perfis = Perfil.objects.all()
+        paginator = Paginator(perfis, ITEMS_PER_PAGE)
+        page = request.GET.get('page',1)
+        try:
+            perfil_list = paginator.get_page(page)
+        except InvalidPage:
+            perfil_list = paginator.get_page(1)    
+        return render(request,'perfis/show_perfis.html',{'perfil_list':perfil_list,
+            'perfil_logado':get_perfil_logado(request),
+            'perfis': Perfil.objects.all()[:10]})
+    fed = Feedback(perfil=get_perfil_logado(request),message='Você não possui permissão!')
+    fed.save()    
+    return redirect('index')    

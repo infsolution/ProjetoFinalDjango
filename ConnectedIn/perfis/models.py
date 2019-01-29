@@ -17,6 +17,8 @@ class Perfil(models.Model):
     error_mensage = models.CharField(max_length=512, null=True)
     foto = models.ImageField(blank=True, null=True, upload_to='media/')
     capa = models.ImageField(blank=True, null=True, upload_to='media/')
+    class Meta:
+        ordering = ('nome',)
 
     @property
     def email(self):

@@ -1,0 +1,127 @@
+{% extends 'perfis/base_b.html' %}
+{% block body %}
+
+{% if perfil_list %}
+{% for perfil in perfil_list %}
+	{% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+{% endif %}
+{% if perfil.bloqueado %}
+        <!--div class="alert alert-danger" role="alert">
+            <h3>Atenção!</h3>
+            <p>{{perfil.error_mensage}}</p>
+        </div>
+
+    {% if perfil_logado.usuario.is_superuser %}
+        <a href="{% url 'desbloquear' perfil.id %}">Desbloquear</a-->
+    {% endif %}
+     
+{% elif perfil.ativa %}
+
+            <!--Perfil-->
+    <div class="card gedf-card">
+        <div class="card-header">
+            <div style="position: relative; top: 0em; left: 0em">
+                <img  width="100%" height="150em" src="https://picsum.photos/50/50" alt="">
+            </div>
+            <div style="position:absolute; top:3em; left:2em">
+                <img  image-profile class="rounded-circle" src="{{perfil.foto}}" width="90">
+                {%if perfil_logado == perfil%}
+                <!--div class="middle">
+                    <button id="myBtn" class="btn btn-primary"><i class="fa fa-camera-retro fa-2x"></i></button>
+                </div-->
+                {%endif%}
+                <strong id="white-name">{{perfil.nome}}</strong>
+            </div>
+        </div>
+
+    {% if perfil_logado.convidavel %}
+        <div class="card-body">
+            <div class="text-muted h7 mb-2">
+                
+            </div>
+            <a href="{% url 'convidar' perfil.id %}">Convidar</a>
+        </div>     
+    {% elif perfil_logado != perfil %}
+        {% if perfil_logado.convites_recebidos.count >= 1 or perfil_logado.convites_feitos.count >= 1 %}
+            {% for convite in perfil_logado.convites_recebidos.all %}
+                {% if perfil == convite.solicitante %}
+                         <div class="card-body">
+                            <div class="text-muted h7 mb-2">
+                                <strong><p>Convite de pendende</p></strong>
+                            </div>
+                            <a href="{% url 'aceitar' convite.id %}">Aceitar</a>
+                             <a href="{% url 'recusar' convite.id %}">Recusar</a>
+                        </div>     
+                {% endif %}
+            {% endfor %}
+
+            {% for convite in perfil_logado.convites_feitos.all %}
+                {% if perfil == convite.convidado %}
+                 <div class="card-body">
+                    <div class="text-muted h7 mb-2">
+                        <strong>Convite enviado.</strong>
+                    </div>
+                     <a href="{% url 'recusar' convite.id %}">Cancelar</a>
+                </div>     
+                        
+                {% endif %}
+            {% endfor %}
+        {% endif %}    
+    {% endif %}
+        <div class="card-footer">
+    {% if perfil in perfil_logado.contatos.all %}
+        <strong>Amigos</strong>
+    {% endif %}
+    {% if perfil.usuario.is_superuser == False and perfil_logado.usuario.is_superuser == True %}
+            <a href="{% url 'promover' perfil.id %}" class="card-link">Promover</a>
+            <a href="{% url 'bloquear' perfil.id %}" onclick="return confirm('Deseja mesmo bloquear o usuario {{perfil.nome}}?')" class="card-link">Bloquear</a>
+    {% endif %}
+    {% if perfil_logado == perfil %}
+            <a href="{% url 'desativar' %}"> Desativar conta</a>
+
+            <hr>
+{% endif %}
+        </div>
+    </div>
+
+{% endif %}
+{% endfor %}
+<nav aria-label="...">
+          <ul class="pagination">
+            {% if perfil_list.has_previous %}
+             <li class="page-item">
+              <a class="page-link" href="?page=1" tabindex="-1">&laquo;</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ posts.previous_page_number }}" tabindex="-1">Anterior</a>
+            </li>
+            {% endif %}
+            {% for page in  perfil_list.paginator.page_range %}
+            <li class="page-item active">
+              {% if perfil_list.number == page %}
+              <!--a class="page-link" href="?page={{perfis_search.number}}">{{perfis_search.number}}</a-->
+              <span class="page-link">{{perfil_list.number}}<span class="sr-only">(current)</span></span>
+              {% else %}
+              <li class="page-item">
+              <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+              {% endif %}
+            </li>
+            
+            {% endfor %}
+            <!--li class="page-item"><a class="page-link" href="#">3</a></li-->
+              {% if perfil_list.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ posts.next_page_number }}">Próxima</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ posts.paginator.num_pages }}"> &raquo;</a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+{% endif %}
+
+{% endblock %}
