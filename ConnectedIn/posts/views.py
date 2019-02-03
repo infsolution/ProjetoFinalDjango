@@ -60,10 +60,10 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     name='post-detail'
-    permission_classes = (
+    '''permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,
-    )
+    )'''
 
 class PerfilList(generics.ListCreateAPIView):
     queryset = Perfil.objects.all()
