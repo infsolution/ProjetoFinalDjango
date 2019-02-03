@@ -1,6 +1,15 @@
 from posts import views
-from django.urls import path
+from django.urls import path, include
 urlpatterns = [
 	path('add/<int:perfil_id>/',views.add, name='add'),
 	path('delete/<int:post_id>', views.delete, name='delete'),
+	path('api/posts/',views.PostList.as_view(), name=views.PostList.name),
+	path('api/posts/<int:pk>', views.PostDetail.as_view(), name=views.PostDetail.name),
+	path('api/perfil/',views.PerfilList.as_view(), name=views.PerfilList.name),
+	path('api/perfil/<int:pk>', views.PerfilDetail.as_view(), name=views.PerfilDetail.name),
+	path('api/image/',views.ImageList.as_view(), name=views.ImageList.name),
+	path('api/image/<int:pk>', views.ImageDetail.as_view(), name=views.ImageDetail.name),
+	path('api/user/',views.UserList.as_view(), name=views.UserList.name),
+	path('api/user/<int:pk>', views.UserDetail.as_view(), name=views.UserDetail.name),
+	path('api-auth/', include('rest_framework.urls')),
 ]

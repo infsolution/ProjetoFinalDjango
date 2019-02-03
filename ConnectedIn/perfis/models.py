@@ -1,8 +1,10 @@
 from django.contrib.auth.models import User
+from django.contrib.auth import *
 from django.db import models
 
 
 class Perfil(models.Model):
+    owner = models.OneToOneField('auth.User', related_name='owner', on_delete=models.CASCADE, blank=True, null=True)
     nome = models.CharField(max_length=255, null=False)
     telefone = models.CharField(max_length=15, null=False)
     nome_empresa = models.CharField(max_length=255, null=False)
