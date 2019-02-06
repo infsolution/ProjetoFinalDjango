@@ -1,12 +1,16 @@
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction, IntegrityError
 from django.shortcuts import render, redirect
-from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
+from rest_framework import generics, exceptions
 from django.utils import timezone
 from datetime import datetime
 from perfis.models import *
 from posts.models import *
 from posts.serializers import *
+from . import permissions as per
 
 
 @transaction.atomic
@@ -46,24 +50,42 @@ def delete(request, post_id):
     fed.save()
     return redirect('index')
 
+def to_comment(request, post_id):
+    post = Post.objects.get(id=post_id)
+    comment = Comment(post=post, user=request.user.perfil, content=request.POST.get('content'))
+    comment.save()
+    return redirect('index')    
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    authentication_class = (TokenAuthentication,)
+    permission_class = (IsOwnerUpdate, IsOwnerOrReadOnly)    
     name='post-list'
-    '''permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly,
-    )'''
+    
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    authentication_class = (TokenAuthentication,)
+    permission_class = (IsOwnerUpdate, IsOwnerOrReadOnly) 
     name='post-detail'
-    '''permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly,
-    )'''
+
+
+    def perform_update(self, serializer):
+        perfil = Perfil.objects.get(nome=serializer.data['user'])
+        if perfil != self.request.user.perfil:  
+            raise exceptions.PermissionDenied(detail='Você não tem permição!')
+        else:
+            post = Post.objects.get(id=serializer.data['pk'])
+            post.postagem = serializer.data['postagem']
+            post.save()
+        return Response(serializer.data)
+    def delete(self, request, *args, **kwargs):
+        post = Post.objects.get(id=kwargs['pk'])
+        if post.user != request.user.perfil:
+            raise exceptions.PermissionDenied(detail='Você não tem permição!')
+        return self.destroy(request, *args, **kwargs)        
 
 class PerfilList(generics.ListCreateAPIView):
     queryset = Perfil.objects.all()
@@ -73,20 +95,14 @@ class PerfilList(generics.ListCreateAPIView):
 class PerfilDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Perfil.objects.all()
     serializer_class = PerfilSerializer
+    permission_class = (IsOwnerUpdate, IsOwnerOrReadOnly)
     name='perfil-detail'
-    permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly,
-    )
+    
 
 class ImageList(generics.ListCreateAPIView):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
     name='image-list'
-    '''permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly,
-    )'''
 
 class ImageDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Image.objects.all()
@@ -113,3 +129,14 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,
     )'''
+
+class PostImageList(generics.ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostImageSerializers
+    authentication_class = (TokenAuthentication,)
+    permission_class = (IsAuthenticated,IsOwnerUpdate)
+    name='postimage-list'
+
+    '''def get_queryset(self):
+        perfil = Perfil.objects.get(nome=self.request.GET.get('username'))
+        return Post.objects.filter(user=perfil)'''

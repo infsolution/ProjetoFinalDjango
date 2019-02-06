@@ -4,7 +4,7 @@ from posts.permissions import *
 from posts.models import *
 
 class ImageSerializer(serializers.HyperlinkedModelSerializer):
-	post = serializers.SlugRelatedField(queryset=Post.objects.all(), slug_field='postagem' )
+	post = serializers.SlugRelatedField(queryset=Post.objects.all(), slug_field='postagem')
 	class Meta:
 		model = Image
 		fields=('url', 'pk', 'post', 'foto')
@@ -15,6 +15,14 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Post
 		fields=('url', 'pk', 'user', 'postagem', 'created_at', 'imagens')
+
+	def update(self, instance, validated_data):
+		print(validated_data)
+		instance.user = validated_data.get('user', instance.user)
+		instance.postagem = validated_data.get('postagem', instance.postagem)
+		instance.save()
+		return instance
+
 class PerfilSerializer(serializers.HyperlinkedModelSerializer):
 	owner = serializers.ReadOnlyField(source='owner.username')
 	class Meta:
@@ -30,3 +38,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model=User
 		fields=('url', 'pk', 'username', 'perfil')
+
+class PostImageSerializers(serializers.HyperlinkedModelSerializer):
+	imagens = ImageSerializer(many=True)
+	class Meta:
+		model=Post
+		fields=('url','pk','user', 'postagem', 'imagens')
