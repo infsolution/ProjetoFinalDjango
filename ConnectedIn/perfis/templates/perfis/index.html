@@ -117,6 +117,11 @@
                         </div>
                     </div>
                     <div class="card-body">
+                        {% if post.compartilhado %}
+                            <div class="text-muted h7 mb-2">
+                                Compartilhado de {{post.compartilhado}}
+                            </div>
+                        {% endif %}
                         <div class="text-muted h7 mb-2"> <!--i class="fa fa-clock-o">CAroço</i-->{{post.created_at}}</div>
                         <!--a class="card-link" href="#">
                             <h5 class="card-title">Lorem ipsum dolor sit amet, consectetur adip.</h5>
@@ -166,7 +171,7 @@
                     {% endwith %}    
                     </label>
                         <label class="card-link" onclick="show_comment('{{post.id}}')"><i class="fa fa-comment" ></i> Comment</label>
-                        <label class="card-link"><i class="fa fa-mail-forward"></i> Share</label>
+                        <a href="{% url 'share' post.id %}" class="card-link"><i class="fa fa-share-alt"></i> Share</a>
                     </div>
                     <!-- TESTE COM HEADER-->
                        <div class="form-group">

@@ -12,6 +12,7 @@ class Post(models.Model):
     postagem = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     init = models.BooleanField(default=False)
+    compartilhado = models.ForeignKey(Perfil, related_name='compartilhado', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.postagem

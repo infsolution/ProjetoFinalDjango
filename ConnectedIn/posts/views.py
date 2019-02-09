@@ -62,6 +62,17 @@ def to_react(request, post_id):
     reaction = Reaction(post=post, user=request.user.perfil, reaction=request.POST.get('reaction'))
     reaction.save()
     return redirect('http://localhost:8000#'+post.postagem)
+def to_share(request, post_id):
+    post = Post.objects.get(id=post_id)
+    myShare = Post(user=request.user.perfil, postagem=post.postagem, compartilhado=post.user)
+    myShare.save()
+    if post.imagens.all():
+        for image in post.imagens.all():
+            foto = Image(post=myShare, foto=image.foto)
+            foto.save()
+    fed = Feedback(perfil=request.user.perfil,message='Mensagem compartilhada na sua linha do tempo!')
+    fed.save()
+    return redirect('http://localhost:8000#'+post.postagem)
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
