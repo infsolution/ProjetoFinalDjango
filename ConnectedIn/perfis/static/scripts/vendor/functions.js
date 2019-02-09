@@ -32,7 +32,7 @@ function show_comment(element){
 function post_comment(comment, event)
 {
 	if(event.keyCode == 13){
-		comment.form.submit();
+		document.getElementById(comment).submit();
 	}
 }
 
@@ -46,5 +46,5 @@ function show_react(element){
 }
 
 function to_react(reaction){
-	reaction.form.submit();
+	document.getElementById(reaction).submit();
 }

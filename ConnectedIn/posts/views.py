@@ -46,10 +46,15 @@ def delete(request, post_id):
     post = Post.objects.get(id=post_id)
     if post in request.user.perfil.postagens.all() or request.user.is_superuser:
         post.delete()
-    fed = Feedback(perfil=request.user.perfil,message='Postagem apagada!')
-    fed.type_message='danger'
-    fed.save()
-    return redirect('index')
+        fed = Feedback(perfil=request.user.perfil,message='Postagem apagada!')
+        fed.type_message='danger'
+        fed.save()
+        return redirect('index')
+    else:
+        fed = Feedback(perfil=request.user.perfil,message='Você só pode apagar suas postagens!')
+        fed.type_message='danger'
+        fed.save()
+        return redirect('index')
 
 def to_comment(request, post_id):
     post = Post.objects.get(id=post_id)
@@ -76,6 +81,10 @@ def to_share(request, post_id):
     fed.save()
     return redirect('http://localhost:8000#'+post.postagem)
 
+
+
+
+#API METODOS
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer

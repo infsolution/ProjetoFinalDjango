@@ -31,9 +31,11 @@ def index(request):
     form = PostModelForm()
     if perfil_logado.usuario.is_superuser:
         return render(request, 'perfis/index.html', {'perfis': Perfil.objects.all()[:10],
-         'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
+         'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks,
+          'sugestao':get_sugestao(perfil_logado)})
     return render(request, 'perfis/index.html', {'perfis': Perfil.objects.filter(ativa=True, bloqueado=False), 
-        'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
+        'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks,
+        'sugestao':get_sugestao(perfil_logado)})
 
 
 def getPosts(perfil_logado):
@@ -80,9 +82,11 @@ def exibir_perfil(request, perfil_id):
         perfil_logado.convidavel = perfil_logado.pode_convidar(perfil)
         if perfil_logado.usuario.is_superuser:
             return render(request, 'perfis/perfil.html',{'perfis': Perfil.objects.all()[:10],
-                'perfil': perfil,'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
+                'perfil': perfil,'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks,
+                'sugestao':get_sugestao(perfil_logado)})
         return render(request, 'perfis/perfil.html',{'perfil': perfil,
-            'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks})
+            'perfil_logado': perfil_logado, 'form':form, 'posts':posts_page, 'messages':feedbacks, 
+            'sugestao':get_sugestao(perfil_logado)})
     else:
         perfil.error_mensage = 'Conta temporariamente desativada!'
         return render(request, 'perfis/perfil.html',{'perfil_logado': get_perfil_logado(request),'perfil':perfil})
@@ -130,6 +134,13 @@ def desfazer(request, perfil_id):
     fed.save()
     return redirect('index')
 
+def get_sugestao(perfil):
+    sugestaoList=[]
+    for contato in perfil.contatos.all():
+        for sugestao in contato.contatos.all():
+            if sugestao not in perfil.contatos.all() and sugestao not in sugestaoList and sugestao != perfil:
+                sugestaoList.append(sugestao)
+    return sugestaoList
 
 def change_password(request):
     if request.method == 'POST':

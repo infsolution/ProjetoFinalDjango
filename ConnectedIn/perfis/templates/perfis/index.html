@@ -106,7 +106,7 @@
                                         <a class="dropdown-item" href="{% url 'delete' post.id %}" onclick="return confirm('Deseja mesmo  apagar esta postagem?')">Apagar</a>
                                         {% else %}
                                         <a class="dropdown-item" href="#">Denunciar</a>
-                                        <a class="dropdown-item" href="{% url 'delete' post.id %}">Não quero ver</a>
+                                        <a class="dropdown-item" href="#">Não quero ver</a>
                                         {% if perfil_logado.usuario.is_superuser %}
                                         <a class="dropdown-item" href="{% url 'delete' post.id %}" onclick="return confirm('Deseja mesmo  apagar a postagem de {{post.user.nome}}?')">Apagar</a>
                                         {% endif %}
@@ -304,9 +304,9 @@
                         </div>
                         <div class="card-body">
                         <div class="form-group">
-                                    <form action="{% url 'reaction' post.id %}" method="POST" accept-charset="utf-8">
+                                    <form action="{% url 'reaction' post.id %}" id="formreact{{post.id}}" method="POST" accept-charset="utf-8">
                                         {% csrf_token %}
-                                        <select name="reaction" id="react{{post.id}}" style="display: none" onclick="to_react(this)" multiple>
+                                    <select name="reaction" id="react{{post.id}}" style="display: none" onclick="to_react('formreact{{post.id}}')" multiple>
                                             <option value="fa fa-heart" >GOSTEI</option>
                                             <option value="fa fa-microphone-slash">HORRIVEL</option>
                                             <option value="fa fa-check-circle">QUERO</option>
@@ -317,7 +317,8 @@
                                             <option value="fa fa-handshake">OTIMO</option>
                                             <option value="fa fa-times">NAO</option>
                                             
-                                        </select>
+                                    </select>
+                                </form>
                         </div>
                     </div>
                     {% if post.comments %}

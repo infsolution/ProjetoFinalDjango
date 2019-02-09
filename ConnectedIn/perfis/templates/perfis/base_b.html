@@ -92,7 +92,31 @@
 			            {% endwith %}
 			        </div>
     			{% endif %}
+    			<div class=" card">
+    				
+    				{% if  sugestao %}
+    					<div class="card-header">
+    						<strong>Veja pessoas que talvez você conheça!</strong>
+    					</div>
+    					<ul class="list-group">
+    						{% for contato in sugestao %}
+								<li class="list-group-item">
+									<a href="{% url 'exibir' contato.id %}">
+										{{contato}}
+									</a>
+								</li>
+    						{% endfor %}
+    					</ul>
+    				{% else %}
+    					<div class="card-header">
+    						<strong>Nenhuma sugestão no momento!</strong>
+    					</div>
+    				{% endif %}
+
     			</div>
+
+    			</div>
+
     			<div class="col-md-6">
     				{% block body %}
         			{% endblock %}
