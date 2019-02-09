@@ -1,5 +1,5 @@
  //Modal Reaction
-var modalR = document.getElementById('modalR');
+/*var modalR = document.getElementById('modalR');
 var btnR = document.getElementById("btnR");
 var spanR = document.getElementsByClassName("close")[0];
 btnR.onclick = function() {
@@ -16,4 +16,4 @@ window.onclick = function(event) {
   if (event.target == modalR) {
     modalR.style.display = "none";
   }
-}
+}*/

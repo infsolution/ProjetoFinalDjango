@@ -37,15 +37,15 @@ class Comments(models.Model):
         return self.content
 
 class Reaction(models.Model):
-    GOSTEI = 'GO'
-    HORRIVEL ='HR'
-    QUERO = 'QR'
-    LEGAL = 'LG'
-    VOU = 'VU'
-    VAMOS = 'VM'
-    BOM = 'BM'
-    OTIMO = 'OT'
-    NAO = 'NO'
+    GOSTEI = 'fa fa-heart'
+    HORRIVEL ='fa fa-microphone-slash'
+    QUERO = 'fa fa-check-circle'
+    LEGAL = 'fa fa-star'
+    VOU = 'fa fa-map-marker'
+    VAMOS = 'fa fa-rocket'
+    BOM = 'fa fa-check'
+    OTIMO = 'fa fa-handshake'
+    NAO = 'fa fa-times'
     REACTION=(
          (GOSTEI,'Gostei'),(VAMOS,'Vamos'),
          (HORRIVEL,'Horrivel'),(QUERO,'Quero'),
@@ -54,5 +54,8 @@ class Reaction(models.Model):
         )
     post = models.ForeignKey(Post, related_name='reactions', on_delete=models.CASCADE)
     user = models.ForeignKey(Perfil, related_name='reaction', on_delete=models.CASCADE)
-    reaction = models.CharField(max_length=2, choices=REACTION, default=GOSTEI)
+    reaction = models.CharField(max_length=30, choices=REACTION, default=GOSTEI)
     reaction_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.reaction

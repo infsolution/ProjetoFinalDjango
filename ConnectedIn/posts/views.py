@@ -47,6 +47,7 @@ def delete(request, post_id):
     if post in request.user.perfil.postagens.all() or request.user.is_superuser:
         post.delete()
     fed = Feedback(perfil=request.user.perfil,message='Postagem apagada!')
+    fed.type_message='danger'
     fed.save()
     return redirect('index')
 
@@ -70,7 +71,8 @@ def to_share(request, post_id):
         for image in post.imagens.all():
             foto = Image(post=myShare, foto=image.foto)
             foto.save()
-    fed = Feedback(perfil=request.user.perfil,message='Mensagem compartilhada na sua linha do tempo!')
+    fed = Feedback(perfil=request.user.perfil,message='Postagem compartilhada na sua linha do tempo!')
+    fed.type_message='success'
     fed.save()
     return redirect('http://localhost:8000#'+post.postagem)
 

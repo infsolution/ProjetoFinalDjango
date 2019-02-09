@@ -24,7 +24,7 @@ def index(request):
     except InvalidPage:
         posts_page = paginator.get_page(1)
     for msg in messages:
-        feedbacks.append(msg.message)
+        feedbacks.append(msg)
         msg.delete()
     if perfil_logado.ativa == False or perfil_logado.bloqueado == True:
         return render(request,'perfis/transicao.html', {'perfil_logado': perfil_logado, 'messages':feedbacks})
@@ -116,6 +116,7 @@ def recusar(request, convite_id):
     convite = Convite.objects.get(id=convite_id)
     convite.recusar()
     fed = Feedback(perfil=get_perfil_logado(request),message='A solicitação foi cancelada!')
+    fed.type_message='danger'
     fed.save()
     return redirect('index')
 
@@ -125,6 +126,7 @@ def desfazer(request, perfil_id):
     perfil = Perfil.objects.get(id=perfil_id)
     perfil.desfazer(get_perfil_logado(request))
     fed = Feedback(perfil=get_perfil_logado(request),message='Você e '+perfil.nome+' não são mais amigos!')
+    fed.type_message='danger'
     fed.save()
     return redirect('index')
 
@@ -187,6 +189,7 @@ def bloquear(request, perfil_id):
         perfil.bloqueado = True
         perfil.save()
         fed = Feedback(perfil=get_perfil_logado(request),message='Você bloqueou '+perfil.nome+'!')
+        fed.type_message='danger'
         fed.save()
         return redirect('index')
 
@@ -195,6 +198,7 @@ def desbloquear(request, perfil_id):
     perfil.bloqueado = False
     perfil.save()
     fed = Feedback(perfil=get_perfil_logado(request),message='Você desbloqueou '+perfil.nome+'!')
+    fed.type_message='success'
     fed.save()
     return redirect('index')
 
@@ -233,6 +237,7 @@ def updatefoto(request):
         perfil.foto = url
         perfil.save()
         fed = Feedback(perfil=get_perfil_logado(request),message='Sua foto do perfil foi atualizada!')
+        fed.type_message='success'
         fed.save()
         return redirect('exibir', perfil.id)
 def perfil_list(request):
@@ -249,5 +254,6 @@ def perfil_list(request):
             'perfil_logado':get_perfil_logado(request),
             'perfis': Perfil.objects.all()[:10]})
     fed = Feedback(perfil=get_perfil_logado(request),message='Você não possui permissão!')
+    fed.type_message='danger'
     fed.save()    
     return redirect('index')    

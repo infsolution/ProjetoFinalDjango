@@ -19,7 +19,7 @@ window.onclick = function(event) {
 
 //Comentarios
 function show_comment(element){
-	if(comment = document.getElementById(element).style.display == "none"){
+	if(document.getElementById(element).style.display == "none"){
 		document.getElementById(element).style.display = "block";
 	}else{
 		document.getElementById(element).style.display = "none";	
@@ -27,11 +27,22 @@ function show_comment(element){
 	
 }
 
+
+
 function post_comment(comment, event)
 {
 	if(event.keyCode == 13){
 		comment.form.submit();
 	}
+}
+
+function show_react(element){
+	if(document.getElementById(element).style.display == "none"){
+		document.getElementById(element).style.display = "block";
+	}else{
+		document.getElementById(element).style.display = "none";	
+	}
+	
 }
 
 function to_react(reaction){

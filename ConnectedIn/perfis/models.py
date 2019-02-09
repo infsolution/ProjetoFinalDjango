@@ -68,5 +68,7 @@ class Convite(models.Model):
 class Feedback(models.Model):
     perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, related_name='Feedback')
     message = models.CharField(max_length=512)
+    type_message = models.CharField(max_length=20, default='success')
+    #possibilidades (primary, secondary, success, danger, warning, info, light, dark)
     def __str__(self):
         return self.message
