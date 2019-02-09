@@ -52,9 +52,16 @@ def delete(request, post_id):
 
 def to_comment(request, post_id):
     post = Post.objects.get(id=post_id)
-    comment = Comment(post=post, user=request.user.perfil, content=request.POST.get('content'))
+    comment = Comments(post=post, user=request.user.perfil, content=request.POST.get('comment'))
     comment.save()
-    return redirect('index')    
+    #return redirect('index')
+    return redirect('http://localhost:8000#'+post.postagem)
+
+def to_react(request, post_id):
+    post = Post.objects.get(id=post_id)
+    reaction = Reaction(post=post, user=request.user.perfil, reaction=request.POST.get('reaction'))
+    reaction.save()
+    return redirect('http://localhost:8000#'+post.postagem)
 
 class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()

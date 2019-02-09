@@ -5,7 +5,9 @@ from rest_framework.authtoken import views as token
 
 urlpatterns = [
 	path('add/<int:perfil_id>/',views.add, name='add'),
-	path('delete/<int:post_id>', views.delete, name='delete'),
+	path('delete/<int:post_id>/', views.delete, name='delete'),
+	path('comment/<int:post_id>/', views.to_comment, name='comment'),
+	path('reaction/<int:post_id>/',views.to_react, name='reaction'),
 	path('api/posts/',views.PostList.as_view(), name=views.PostList.name),
 	path('api/posts/<int:pk>', views.PostDetail.as_view(), name=views.PostDetail.name),
 	path('api/perfil/',views.PerfilList.as_view(), name=views.PerfilList.name),

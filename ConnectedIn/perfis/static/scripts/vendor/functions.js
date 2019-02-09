@@ -16,3 +16,24 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
+
+//Comentarios
+function show_comment(element){
+	if(comment = document.getElementById(element).style.display == "none"){
+		document.getElementById(element).style.display = "block";
+	}else{
+		document.getElementById(element).style.display = "none";	
+	}
+	
+}
+
+function post_comment(comment, event)
+{
+	if(event.keyCode == 13){
+		comment.form.submit();
+	}
+}
+
+function to_react(reaction){
+	reaction.form.submit();
+}

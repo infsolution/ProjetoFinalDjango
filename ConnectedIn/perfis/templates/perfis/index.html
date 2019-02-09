@@ -81,6 +81,7 @@
             {% if posts %}
                 {% for post in posts %}
                                     <!--- \\\\\\\Post-->
+<section id="{{post}}">                                    
                 <div class="card gedf-card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
@@ -154,31 +155,68 @@
                             {{post}}
                         </p>
                     </div>
+                    {% with total=post.reactions.count %}
                     <div class="card-footer">
-                        <a href="#" class="card-link"><i class="fa fa-gittip"></i> Like</a>
-                        <a href="#" class="card-link"><i class="fa fa-comment"></i> Comment</a>
-                        <a href="#" class="card-link"><i class="fa fa-mail-forward"></i> Share</a>
+                        <label class="card-link" onclick="show_comment('react{{post.id}}')"><i class="fa fa-sign-language"></i>
+                        {% if total %} 
+                        {{total}} Reaction{{total|pluralize}}
+                        {% else %}
+                            Reaction
+                        {%endif%}
+                    {% endwith %}    
+                    </label>
+                        <label class="card-link" onclick="show_comment('{{post.id}}')"><i class="fa fa-comment" ></i> Comment</label>
+                        <label class="card-link"><i class="fa fa-mail-forward"></i> Share</label>
                     </div>
                     <!-- TESTE COM HEADER-->
-                                                <div class="card-header">
+                       <div class="form-group">
+                                    <form action="{% url 'comment' post.id%}" method="POST" accept-charset="utf-8">
+                                        {% csrf_token %}
+                                        <input type="text" id="{{post.id}}" class="form-control"  name="comment" style="display: none" onkeypress="post_comment(this, event)">
+                                    </form>
+                                    
+                        </div>
+
+                        <div class="form-group">
+                                    <form action="{% url 'reaction' post.id %}" method="POST" accept-charset="utf-8">
+                                        {% csrf_token %}
+                                        <select name="reaction" id="react{{post.id}}" style="display: none" onclick="to_react(this)" multiple>
+                                            <option value="GO" >GOSTEI</option>
+                                            <option value="HR">HORRIVEL</option>
+                                            <option value="QR">QUERO</option>
+                                            <option value="LG">LEGAL</option>
+                                            <option value="VU">VOU</option>
+                                            <option value="VM">VAMOS</option>
+                                            <option value="BM">BOM</option>
+                                            <option value="OT">OTIMO</option>
+                                            <option value="NO">NAO</option>
+                                            
+                                        </select>
+                        </div>
+
+                    {% if post.comments %}
+                    {% for comment in post.comments.all%}    
+                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="mr-2">
-                                    <img class="rounded-circle" width="45" src="{{post.user.foto}}" alt="">
+                                    <img class="rounded-circle" width="45" src="{{comment.user.foto}}" alt="">
                                 </div>
                                 <p class="card-text">
-                                    {{post}}
+                                    {{comment}}
                                 </p>
-                            </div>
-                            <div>
-                                
                             </div>
                         </div>
                     </div>
-                    <!-- TFIM ESTE COM HEADER-->
+
+                    {% endfor %}
+
+                    {% endif %}
+                    <!-- FIM TESTE COM HEADER-->
                 </div>
                 <hr>
     <!--Fim postagem-->
+</section>
                 {% endfor %}
             {% else %}
                 <p>Não há Posts Cadastrados!</p>

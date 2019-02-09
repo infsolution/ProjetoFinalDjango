@@ -20,9 +20,9 @@
     <span class="close">&times;</span>
     <form action="{% url 'updatefoto' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <p><input type="file" class="form-control" name="foto"></p>
-    <button type="submit" class="btn btn-primary">Atualizar foto</button>
-</form>
+        <p><input type="file" class="form-control" name="foto"></p>
+        <button type="submit" class="btn btn-primary">Atualizar foto</button>
+    </form>
   </div>
 
 </div>
