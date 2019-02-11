@@ -166,6 +166,21 @@ class PostImageList(generics.ListAPIView):
     permission_class = (IsAuthenticated,IsOwnerUpdate)
     name='postimage-list'
 
-    '''def get_queryset(self):
-        perfil = Perfil.objects.get(nome=self.request.GET.get('username'))
-        return Post.objects.filter(user=perfil)'''
+class PostCreate(generics.CreateApiView):
+    queryset = Post.objects.all()
+    serializer_class = PostCreateSerializers
+    authentication_class = (TokenAuthentication,)
+    name='post-create'
+     def perform_create(self, serializer):
+        if request.method == 'POST':
+            post = Post(user=perfil, postagem=request.POST['postagem'])
+            post.save()
+         if request.FILES:
+                for image in request.FILES.getlist('fotos_post'):
+                    up_image = image
+                    fs = FileSystemStorage()
+                    name = fs.save(up_image.name, up_image)
+                    url = fs.url(name)
+                    foto = Image(post=post, foto=url)
+                    foto.save()
+        serializer.save()

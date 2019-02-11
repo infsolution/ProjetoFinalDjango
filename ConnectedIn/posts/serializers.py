@@ -17,7 +17,6 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
 		fields=('url', 'pk', 'user', 'postagem', 'created_at', 'imagens')
 
 	def update(self, instance, validated_data):
-		print(validated_data)
 		instance.user = validated_data.get('user', instance.user)
 		instance.postagem = validated_data.get('postagem', instance.postagem)
 		instance.save()
@@ -44,3 +43,7 @@ class PostImageSerializers(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model=Post
 		fields=('url','pk','user', 'postagem', 'imagens')
+class PostCreateSerializers(serializer.HyperlinkedModelSerializer):
+	class Meta:
+		model = Post
+		fields('user', 'postagem', 'imagens')
