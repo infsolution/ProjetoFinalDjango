@@ -43,7 +43,8 @@ class PostImageSerializers(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model=Post
 		fields=('url','pk','user', 'postagem', 'imagens')
-class PostCreateSerializers(serializer.HyperlinkedModelSerializer):
+class PostCreateSerializers(serializers.HyperlinkedModelSerializer):
+	user = serializers.SlugRelatedField(queryset=Perfil.objects.all(), slug_field='nome')
 	class Meta:
 		model = Post
-		fields('user', 'postagem', 'imagens')
+		fields=('user', 'postagem', 'imagens')

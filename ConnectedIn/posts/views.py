@@ -3,8 +3,10 @@ from django.db import transaction, IntegrityError
 from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework import generics, exceptions
+from django.contrib.auth import authenticate
 from django.utils import timezone
 from datetime import datetime
 from perfis.models import *
@@ -114,7 +116,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         post = Post.objects.get(id=kwargs['pk'])
         if post.user != request.user.perfil:
             raise exceptions.PermissionDenied(detail='Você não tem permição!')
-        return self.destroy(request, *args, **kwargs)        
+        return self.destroy(request, *args, **kwargs)  
 
 class PerfilList(generics.ListCreateAPIView):
     queryset = Perfil.objects.all()
@@ -166,21 +168,21 @@ class PostImageList(generics.ListAPIView):
     permission_class = (IsAuthenticated,IsOwnerUpdate)
     name='postimage-list'
 
-class PostCreate(generics.CreateApiView):
+class PostCreate(generics.CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostCreateSerializers
-    authentication_class = (TokenAuthentication,)
+    authentication_class = (TokenAuthentication)
     name='post-create'
-     def perform_create(self, serializer):
-        if request.method == 'POST':
-            post = Post(user=perfil, postagem=request.POST['postagem'])
+    def perform_create(self, serializer):
+        if self.request.method == 'POST':
+            post = Post(user=self.request.user.perfil, postagem=self.request.POST['postagem'])
             post.save()
-         if request.FILES:
-                for image in request.FILES.getlist('fotos_post'):
-                    up_image = image
-                    fs = FileSystemStorage()
-                    name = fs.save(up_image.name, up_image)
-                    url = fs.url(name)
-                    foto = Image(post=post, foto=url)
-                    foto.save()
-        serializer.save()
+        if self.request.FILES:
+            for image in self.request.FILES.getlist('fotos'):
+                up_image = image
+                fs = FileSystemStorage()
+                name = fs.save(up_image.name, up_image)
+                url = fs.url(name)
+                foto = Image(post=post, foto=url)
+                foto.save()
+        return Response(serializer.data)
