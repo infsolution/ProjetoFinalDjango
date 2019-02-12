@@ -48,3 +48,10 @@ class PostCreateSerializers(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = Post
 		fields=('user', 'postagem', 'imagens')
+
+class CommentSerializers(serializers.HyperlinkedModelSerializer):
+	user = serializers.SlugRelatedField(queryset=Perfil.objects.all(), slug_field='nome')
+	post = serializers.SlugRelatedField(queryset=Post.objects.all(), slug_field='postagem')
+	class Meta:
+		model=Comments
+		fields = ('pk','url', 'post', 'user', 'content')

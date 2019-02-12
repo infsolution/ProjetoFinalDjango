@@ -91,7 +91,7 @@ class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     authentication_class = (TokenAuthentication,)
-    permission_class = (IsOwnerUpdate, IsOwnerOrReadOnly)    
+    #permission_class = (IsOwnerUpdate)    
     name='post-list'
     
 
@@ -99,24 +99,8 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     authentication_class = (TokenAuthentication,)
-    permission_class = (IsOwnerUpdate, IsOwnerOrReadOnly) 
+    permission_classes =(IsOwnerUpdate,)
     name='post-detail'
-
-
-    def perform_update(self, serializer):
-        perfil = Perfil.objects.get(nome=serializer.data['user'])
-        if perfil != self.request.user.perfil:  
-            raise exceptions.PermissionDenied(detail='Você não tem permição!')
-        else:
-            post = Post.objects.get(id=serializer.data['pk'])
-            post.postagem = serializer.data['postagem']
-            post.save()
-        return Response(serializer.data)
-    def delete(self, request, *args, **kwargs):
-        post = Post.objects.get(id=kwargs['pk'])
-        if post.user != request.user.perfil:
-            raise exceptions.PermissionDenied(detail='Você não tem permição!')
-        return self.destroy(request, *args, **kwargs)  
 
 class PerfilList(generics.ListCreateAPIView):
     queryset = Perfil.objects.all()
@@ -186,3 +170,15 @@ class PostCreate(generics.CreateAPIView):
                 foto = Image(post=post, foto=url)
                 foto.save()
         return Response(serializer.data)
+
+class CommentsList(generics.ListCreateAPIView):
+    queryset = Comments.objects.all()
+    serializer_class=CommentSerializers
+    authentication_class = (TokenAuthentication)
+    name='comments-list'
+
+class CommentsDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comments.objects.all()
+    serializer_class=CommentSerializers
+    authentication_class = (TokenAuthentication)
+    name='comments-detail'

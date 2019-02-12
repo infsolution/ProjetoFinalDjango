@@ -19,6 +19,8 @@ urlpatterns = [
 	path('api/user/',views.UserList.as_view(), name=views.UserList.name),
 	path('api/user/<int:pk>/', views.UserDetail.as_view(), name=views.UserDetail.name),
 	path('api/post-create/',views.PostCreate.as_view(), name=views.PostCreate.name),
+	path('api/comments/', views.CommentsList.as_view(), name=views.CommentsList.name),
+	path('api/comments/<int:pk>/', views.CommentsDetail.as_view(), name=views.CommentsDetail.name),
 	path('api-auth/', include('rest_framework.urls')),
 	path('api/postimage/',views.PostImageList.as_view(), name=views.PostImageList.name),
 	path('api-token-auth/', token.obtain_auth_token, name='api-token-auth'),

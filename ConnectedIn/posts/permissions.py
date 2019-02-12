@@ -1,5 +1,5 @@
 from rest_framework import permissions
-
+from .models import *
 class IsOwnerOrReadOnly(permissions.BasePermission):
 	def has_object_permission(self, request, view, obj):
 		if request.method in permissions.SAFE_METHODS:
@@ -9,11 +9,14 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 class IsOwnerUpdate(permissions.BasePermission):
 	def has_object_permission(self, request, view, obj):
+		if request.method == 'GET':
+			return True
 		try:
-			perfil = Perfil.objects.get(id=view.kwargs['pk'])
+			post = Post.objects.get(id=view.kwargs['pk'])
+			print(type(post.user.owner))
 		except:	
 			return False
-		if request.user.peril == perfil:
+		if request.user == post.user.usuario:
 			return True
 		return False
 			
